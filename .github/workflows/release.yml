@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.x'
+          cache: true
+      - run: make check
+        env:
+          FUZZTIME: 30s
+      - name: Verify release changelog
+        run: grep -F "## [${GITHUB_REF_NAME#v}]" CHANGELOG.md
+      - name: Build source archives
+        run: |
+          git archive --format=tar.gz --prefix="go-webhook-${GITHUB_REF_NAME}/" -o "go-webhook-${GITHUB_REF_NAME}.tar.gz" HEAD
+          git archive --format=zip --prefix="go-webhook-${GITHUB_REF_NAME}/" -o "go-webhook-${GITHUB_REF_NAME}.zip" HEAD
+          sha256sum "go-webhook-${GITHUB_REF_NAME}".* > SHA256SUMS
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            go-webhook-${{ github.ref_name }}.tar.gz
+            go-webhook-${{ github.ref_name }}.zip
+            SHA256SUMS
