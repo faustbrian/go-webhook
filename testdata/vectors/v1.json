@@ -1,0 +1,44 @@
+{
+  "version": "v1",
+  "generator": "python-stdlib",
+  "vectors": [
+    {
+      "key_id": "interop-key",
+      "key_material_base64url": "Y3Jvc3MtbGFuZ3VhZ2UtdGVzdC1rZXk",
+      "timestamp": 1700000000,
+      "nonce": "python-fixture-nonce",
+      "method": "post",
+      "path": "/hooks/%2Forders",
+      "raw_query": "b=two&a=2&a=1&empty=",
+      "host": "RECEIVER.example:443",
+      "body_base64url": "eyJoZWxsbyI6IndvcmxkIn0K",
+      "metadata": {
+        "tenant": "acme",
+        "unicode": "snowman ☃"
+      },
+      "name": "hmac-sha256-python",
+      "algorithm": "sha256",
+      "canonical_base64url": "d2ViaG9vay12MQphbGdvcml0aG06c2hhMjU2CnRpbWVzdGFtcDoxNzAwMDAwMDAwCm5vbmNlOmNIbDBhRzl1TFdacGVIUjFjbVV0Ym05dVkyVQprZXktaWQ6YVc1MFpYSnZjQzFyWlhrCm1ldGhvZDpQT1NUCnBhdGg6TDJodmIydHpMeVV5Um05eVpHVnljdwpxdWVyeTpZVDB4Sm1FOU1pWmlQWFIzYnlabGJYQjBlVDAKaG9zdDpjbVZqWldsMlpYSXVaWGhoYlhCc1pUbzBORE0KYm9keS1zaGEyNTY6YWtmREczdDhPNW9kdkpZR2FmUm5UT0NJeVB5ZG1rOS1uOHdfYW9IM3VHdwptZXRhZGF0YTpaRWRXZFZsWE5UQTlXVmRPZEZwUkNtUlhOWEJaTWpscldsRTlZekkxZG1ReU1XaGlhVVJwYlVsTgo",
+      "signature_base64url": "AE0BIaUBmBNzDrZRs0j77kvWFWqnz9JOZs_mAEQ4dvY"
+    },
+    {
+      "key_id": "interop-key",
+      "key_material_base64url": "Y3Jvc3MtbGFuZ3VhZ2UtdGVzdC1rZXk",
+      "timestamp": 1700000000,
+      "nonce": "python-fixture-nonce",
+      "method": "post",
+      "path": "/hooks/%2Forders",
+      "raw_query": "b=two&a=2&a=1&empty=",
+      "host": "RECEIVER.example:443",
+      "body_base64url": "eyJoZWxsbyI6IndvcmxkIn0K",
+      "metadata": {
+        "tenant": "acme",
+        "unicode": "snowman ☃"
+      },
+      "name": "hmac-sha512-python",
+      "algorithm": "sha512",
+      "canonical_base64url": "d2ViaG9vay12MQphbGdvcml0aG06c2hhNTEyCnRpbWVzdGFtcDoxNzAwMDAwMDAwCm5vbmNlOmNIbDBhRzl1TFdacGVIUjFjbVV0Ym05dVkyVQprZXktaWQ6YVc1MFpYSnZjQzFyWlhrCm1ldGhvZDpQT1NUCnBhdGg6TDJodmIydHpMeVV5Um05eVpHVnljdwpxdWVyeTpZVDB4Sm1FOU1pWmlQWFIzYnlabGJYQjBlVDAKaG9zdDpjbVZqWldsMlpYSXVaWGhoYlhCc1pUbzBORE0KYm9keS1zaGEyNTY6YWtmREczdDhPNW9kdkpZR2FmUm5UT0NJeVB5ZG1rOS1uOHdfYW9IM3VHdwptZXRhZGF0YTpaRWRXZFZsWE5UQTlXVmRPZEZwUkNtUlhOWEJaTWpscldsRTlZekkxZG1ReU1XaGlhVVJwYlVsTgo",
+      "signature_base64url": "IxNJ5bV0k6YvYH_NousZxDhXrvUcQVrQZ3FzGdUur9g1IlrvAkwrWM7aJ3TtJfG-b54FaECLlNKadEDhJmTUJA"
+    }
+  ]
+}
