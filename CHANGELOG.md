@@ -5,6 +5,11 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+### Compatibility
+
+- Regenerate the exported API baseline with the repository's Go 1.26
+  toolchain so the stable `Envelope.Data` contract is represented accurately.
+
 ### Changed
 
 - Exclude intentional nested modules from root local-proxy archives so local,
