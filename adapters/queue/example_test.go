@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/faustbrian/golib/pkg/queue/core"
-	"github.com/faustbrian/golib/pkg/queue/job"
-	webhook "github.com/faustbrian/golib/pkg/webhook"
-	"github.com/faustbrian/golib/pkg/webhook/adapters/queue"
+	"github.com/faustbrian/go-queue/core"
+	"github.com/faustbrian/go-queue/job"
+	webhook "github.com/faustbrian/go-webhook"
+	"github.com/faustbrian/go-webhook/adapters/queue"
 )
 
 func ExampleAdapter_Enqueue() {

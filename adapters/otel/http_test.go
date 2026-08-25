@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	telemetry "github.com/faustbrian/golib/pkg/telemetry"
+	telemetry "github.com/faustbrian/go-telemetry"
 	"go.opentelemetry.io/otel/trace"
 )
 

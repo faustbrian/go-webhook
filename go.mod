@@ -1,13 +1,13 @@
-module github.com/faustbrian/golib/pkg/webhook
+module github.com/faustbrian/go-webhook
 
 go 1.26.6
 
 require (
-	github.com/faustbrian/golib/pkg/idempotency v0.0.0
-	github.com/faustbrian/golib/pkg/log v0.0.0
-	github.com/faustbrian/golib/pkg/outbox v0.0.0
-	github.com/faustbrian/golib/pkg/queue v0.0.0
-	github.com/faustbrian/golib/pkg/telemetry v0.0.0
+	github.com/faustbrian/go-idempotency v1.0.0
+	github.com/faustbrian/go-log v1.0.0
+	github.com/faustbrian/go-queue v1.0.0
+	github.com/faustbrian/go-telemetry v1.0.0
+	github.com/faustbrian/go-transactional-outbox v1.0.0
 	go.opentelemetry.io/otel v1.44.0
 	go.opentelemetry.io/otel/metric v1.44.0
 	go.opentelemetry.io/otel/sdk v1.44.0

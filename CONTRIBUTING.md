@@ -1,18 +1,55 @@
 # Contributing
 
-Use a focused branch and conventional commits. Every behavior change starts
-with a failing regression, vector, or conformance test. Run `make check` before
-opening a pull request. Never add real webhook payloads, signatures, endpoint
-tokens, event IDs, or secrets to tests, fixtures, issues, or logs.
+## Before Editing
 
-Public API, canonical bytes, emitted headers, envelope encoding, error
-identity, retry classification, and provider presets are compatibility
-surfaces. Describe any change to them under `Unreleased` in `CHANGELOG.md`.
-Review the affected entries in
-[`docs/specification-decisions.md`](docs/specification-decisions.md), preserve
-superseded decisions, and update the pinned source manifest and executable
-evidence when a protocol interpretation changes.
+1. Read [`AGENTS.md`](AGENTS.md) and the affected module's goals and docs.
+2. Run `make inventory` and the narrow baseline gate for the module.
+3. Identify owned dependencies and reverse dependants in `modules.json`.
+4. Preserve unrelated work and generated/corpus provenance.
 
-Provider presets require an authoritative specification link, independent
-positive and negative fixtures, and a named maintenance owner. A copied blog
-post or SDK snippet is insufficient evidence.
+## Changes
+
+Keep commits focused and conventional. Update every affected changelog with
+the behavior and migration impact. Public API changes require compatibility
+evidence and documentation. Specification behavior requires a decision record,
+fixture coverage, and interoperability evidence.
+
+New direct dependencies and dependency updates must follow the
+[dependency governance policy](docs/dependency-governance.md). Package-local
+update bots are forbidden; the root policy owns every module and action update.
+
+Specification-backed changes must follow the
+[specification governance contract](docs/specification-governance.md), update
+the affected stable decision entries, and complete the Specification Decisions
+section of the pull request template. An unresolved interpretation or stale
+source pin is release-blocking; peer behavior cannot silently select policy.
+
+Do not add package-local workflows, permanent replacements, machine-specific
+paths, bypass flags, broad mutation exclusions, or aggregate quality metrics
+that hide a failing package.
+
+## Verification
+
+Run during development:
+
+```bash
+make inventory
+make specification-decisions
+make check MODULES=pkg/<library>
+```
+
+Before submitting a repository-wide change:
+
+```bash
+make ci-changed BASE=origin/main
+```
+
+The full scheduled and release gate is `make ci`. Report every unavailable or
+failing command; do not describe partial results as release-ready.
+
+## Adding A Module
+
+Follow [module lifecycle procedures](docs/module-lifecycle.md). New modules
+require an explicit purpose, ownership boundary, dependency review, package
+catalog entry, full quality gates, documentation, changelog, license, security
+policy, compatibility plan, and release dry-run.

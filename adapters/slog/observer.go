@@ -8,7 +8,7 @@ import (
 	"log/slog"
 	"strconv"
 
-	webhook "github.com/faustbrian/golib/pkg/webhook"
+	webhook "github.com/faustbrian/go-webhook"
 )
 
 var ErrInvalidConfig = errors.New("webhook/slog: logger is required")

@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/faustbrian/golib/pkg/queue/core"
-	"github.com/faustbrian/golib/pkg/queue/job"
-	webhook "github.com/faustbrian/golib/pkg/webhook"
+	"github.com/faustbrian/go-queue/core"
+	"github.com/faustbrian/go-queue/job"
+	webhook "github.com/faustbrian/go-webhook"
 )
 
 var ErrInvalidConfig = errors.New("webhook/queue: invalid configuration")

@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-webhook",
+  "packages": [
+    {
+      "module_directory": ".",
+      "directory": ".",
+      "name": "webhook",
+      "import_path": "github.com/faustbrian/go-webhook",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "adapters/idempotency",
+      "name": "webhookidempotency",
+      "import_path": "github.com/faustbrian/go-webhook/adapters/idempotency",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "adapters/otel",
+      "name": "webhookotel",
+      "import_path": "github.com/faustbrian/go-webhook/adapters/otel",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "adapters/outbox",
+      "name": "webhookoutbox",
+      "import_path": "github.com/faustbrian/go-webhook/adapters/outbox",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "adapters/queue",
+      "name": "webhookqueue",
+      "import_path": "github.com/faustbrian/go-webhook/adapters/queue",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "adapters/slog",
+      "name": "webhookslog",
+      "import_path": "github.com/faustbrian/go-webhook/adapters/slog",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "webhooktest",
+      "name": "webhooktest",
+      "import_path": "github.com/faustbrian/go-webhook/webhooktest",
+      "kind": "test support",
+      "production": false,
+      "executable": true,
+      "coverage_required": false,
+      "build_required": true,
+      "build_tags": []
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"time"
 
-	webhook "github.com/faustbrian/golib/pkg/webhook"
+	webhook "github.com/faustbrian/go-webhook"
 )
 
 func ExampleVerifier_Middleware() {

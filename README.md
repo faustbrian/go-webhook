@@ -1,5 +1,15 @@
 # webhook
 
+[![CI](https://github.com/faustbrian/go-webhook/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/faustbrian/go-webhook/actions/workflows/ci.yml)
+[![CodeQL](https://img.shields.io/badge/CodeQL-required-blue)](https://github.com/faustbrian/go-webhook/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25_required-blue)](CONTRIBUTING.md#verification)
+[![Mutation](https://img.shields.io/badge/mutation-100%25_required-blue)](CONTRIBUTING.md#verification)
+[![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
+[![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-webhook.svg)](https://pkg.go.dev/github.com/faustbrian/go-webhook)
+[![Release](https://img.shields.io/github/v/release/faustbrian/go-webhook?sort=semver)](https://github.com/faustbrian/go-webhook/releases)
+[![Go](https://img.shields.io/badge/go-1.26.6-00ADD8?logo=go)](https://go.dev/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 `webhook` is a protocol-independent Go module for exact-byte webhook
 verification, replay protection, deterministic outbound signing, and bounded
 delivery. It uses `net/http`, HMAC-SHA-256 or HMAC-SHA-512, explicit clocks and
@@ -15,7 +25,7 @@ Protocol ambiguities and application policies are recorded in the
 ## Install
 
 ```sh
-go get github.com/faustbrian/golib/pkg/webhook
+go get github.com/faustbrian/go-webhook
 ```
 
 Go 1.26 or newer is required because the optional published `outbox`

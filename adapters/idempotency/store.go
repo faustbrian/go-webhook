@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	idempotency "github.com/faustbrian/golib/pkg/idempotency"
-	webhook "github.com/faustbrian/golib/pkg/webhook"
+	idempotency "github.com/faustbrian/go-idempotency"
+	webhook "github.com/faustbrian/go-webhook"
 )
 
 var (

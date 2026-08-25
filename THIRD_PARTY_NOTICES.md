@@ -5,11 +5,11 @@ Go modules. Their complete license texts remain in their source distributions.
 
 | Module | License |
 | --- | --- |
-| `github.com/faustbrian/golib/pkg/idempotency` | MIT |
-| `github.com/faustbrian/golib/pkg/log` | MIT |
-| `github.com/faustbrian/golib/pkg/outbox` | MIT |
-| `github.com/faustbrian/golib/pkg/queue` | MIT |
-| `github.com/faustbrian/golib/pkg/telemetry` | MIT |
+| `github.com/faustbrian/go-idempotency` | MIT |
+| `github.com/faustbrian/go-log` | MIT |
+| `github.com/faustbrian/go-transactional-outbox` | MIT |
+| `github.com/faustbrian/go-queue` | MIT |
+| `github.com/faustbrian/go-telemetry` | MIT |
 | `go.opentelemetry.io/otel` and SDK/API submodules | Apache-2.0 |
 | `go.uber.org/goleak` (tests) | MIT |
 

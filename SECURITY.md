@@ -2,8 +2,8 @@
 
 ## Supported versions
 
-No release has been published. Before v1, security fixes are applied to `main`
-and users must pin an exact revision and review every upgrade. After v1, fixes
+Security fixes are applied to the latest stable v1 release and `main`; users
+must pin an exact version and review every upgrade. Fixes
 are backported only when the maintainer explicitly announces a supported
 branch.
 

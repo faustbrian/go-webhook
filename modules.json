@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-webhook",
+  "go_version": "1.26.6",
+  "modules": [
+    {
+      "directory": ".",
+      "module_path": "github.com/faustbrian/go-webhook",
+      "go_version": "1.26.6",
+      "packages": [
+        {
+          "module_directory": ".",
+          "directory": ".",
+          "name": "webhook",
+          "import_path": "github.com/faustbrian/go-webhook",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "adapters/idempotency",
+          "name": "webhookidempotency",
+          "import_path": "github.com/faustbrian/go-webhook/adapters/idempotency",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "adapters/otel",
+          "name": "webhookotel",
+          "import_path": "github.com/faustbrian/go-webhook/adapters/otel",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "adapters/outbox",
+          "name": "webhookoutbox",
+          "import_path": "github.com/faustbrian/go-webhook/adapters/outbox",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "adapters/queue",
+          "name": "webhookqueue",
+          "import_path": "github.com/faustbrian/go-webhook/adapters/queue",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "adapters/slog",
+          "name": "webhookslog",
+          "import_path": "github.com/faustbrian/go-webhook/adapters/slog",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "webhooktest",
+          "name": "webhooktest",
+          "import_path": "github.com/faustbrian/go-webhook/webhooktest",
+          "kind": "test support",
+          "production": false,
+          "executable": true,
+          "coverage_required": false,
+          "build_required": true,
+          "build_tags": []
+        }
+      ],
+      "purpose": "`webhook` is a protocol-independent Go module for exact-byte webhook verification, replay protection, deterministic outbound signing, and bounded delivery. It uses `net/http`, HMAC-SHA-256 or HMAC-SHA-512, explicit clocks and limits, and no production `unsafe` or cgo.",
+      "lifecycle": "stable",
+      "kind": "public library",
+      "releasable": true,
+      "family": "protocols-and-descriptions",
+      "family_label": "Protocols And Descriptions",
+      "family_description": "Standards, envelopes, schemas, descriptions, signatures, and wire interoperability.",
+      "family_order": 3,
+      "version": "v1.0.0",
+      "tag_prefix": "v",
+      "owned_dependencies": [
+        "github.com/faustbrian/go-idempotency",
+        "github.com/faustbrian/go-log",
+        "github.com/faustbrian/go-transactional-outbox",
+        "github.com/faustbrian/go-queue",
+        "github.com/faustbrian/go-telemetry"
+      ],
+      "reverse_owned_dependencies": [
+        "github.com/faustbrian/go-idempotency/compatibility/ecosystem",
+        "github.com/faustbrian/go-service/integration/reference-external"
+      ],
+      "external_runtime_dependencies": [
+        "go.opentelemetry.io/otel",
+        "go.opentelemetry.io/otel/metric",
+        "go.opentelemetry.io/otel/sdk",
+        "go.opentelemetry.io/otel/trace",
+        "go.uber.org/goleak"
+      ],
+      "required_services": [],
+      "build_tags": [],
+      "test_tags": [],
+      "interoperability_tools": [
+        "Python 3 standard-library HMAC-SHA-256 and HMAC-SHA-512 vectors"
+      ],
+      "specifications": [
+        "Go 1.26.6 cryptography, HTTP, URL, address, time, and encoding contracts",
+        "RFC 2104 HMAC and RFC 4231 HMAC-SHA-256/HMAC-SHA-512 vectors",
+        "RFC 4648 Base-N Encodings",
+        "RFC 3986 URI Generic Syntax",
+        "RFC 3339 Internet date and time",
+        "RFC 8259 JSON",
+        "RFC 8941 Structured Fields comparison boundary",
+        "RFC 9110 HTTP Semantics",
+        "RFC 9421 HTTP Message Signatures comparison boundary",
+        "IANA IPv4 and IPv6 Special-Purpose Address Registries at 2025-10-09",
+        "CloudEvents 1.0.2 comparison boundary",
+        "W3C Trace Context Level 1"
+      ],
+      "conformance_corpora": [
+        "Pinned normative-source matrix and 26-decision protocol register",
+        "Independent Python HMAC-SHA-256 and HMAC-SHA-512 v1 vectors",
+        "Controlled body, replay, delivery, DNS, redirect, and SSRF matrices"
+      ],
+      "provenance": [
+        "specification/manifest.tsv"
+      ],
+      "goal_files": [
+        ".ai/GOAL.md",
+        ".ai/GOAL_HARDEN.md"
+      ],
+      "goal_status": "implementation-evidence-inventoried",
+      "goal_evidence": [
+        {
+          "file": ".ai/GOAL.md",
+          "requirements_sha256": "ff9145e81f44352b3beddb83fd3737084a092d1a1f5d853cd50282afdde6b710",
+          "implementation_evidence": [
+            "CHANGELOG.md",
+            "README.md",
+            "docs/api.md",
+            "docs/security.md"
+          ],
+          "verification_gates": [
+            "format-check",
+            "tidy-check",
+            "safety",
+            "vet",
+            "test",
+            "race",
+            "coverage",
+            "lint",
+            "staticcheck",
+            "vulnerability",
+            "secrets",
+            "licenses",
+            "sbom",
+            "fuzz",
+            "mutation",
+            "nilaway",
+            "docs",
+            "api",
+            "conformance",
+            "interoperability",
+            "benchmark"
+          ],
+          "implementation_status": "implemented-requires-fresh-verification"
+        },
+        {
+          "file": ".ai/GOAL_HARDEN.md",
+          "requirements_sha256": "6e1aeeef7984259d05e84da9e6007a020f3460a95e33109587b006a7b425ea81",
+          "implementation_evidence": [
+            "CHANGELOG.md",
+            "README.md",
+            "docs/api.md",
+            "docs/security.md"
+          ],
+          "verification_gates": [
+            "format-check",
+            "tidy-check",
+            "safety",
+            "vet",
+            "test",
+            "race",
+            "coverage",
+            "lint",
+            "staticcheck",
+            "vulnerability",
+            "secrets",
+            "licenses",
+            "sbom",
+            "fuzz",
+            "mutation",
+            "nilaway",
+            "docs",
+            "api",
+            "conformance",
+            "interoperability",
+            "benchmark"
+          ],
+          "implementation_status": "implemented-requires-fresh-verification"
+        }
+      ],
+      "gates": {
+        "api_compatibility": true,
+        "benchmarks": true,
+        "conformance": true,
+        "coverage": true,
+        "documentation": true,
+        "fuzz": true,
+        "lint": true,
+        "mutation": true,
+        "race": true,
+        "security": true,
+        "tests": true
+      }
+    }
+  ]
+}

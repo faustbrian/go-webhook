@@ -5,6 +5,8 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-08-25
+
 ### Documentation
 
 - Replace obsolete standalone-repository links and workflow claims with
@@ -20,6 +22,7 @@ and Semantic Versioning.
 
 ### Changed
 
+- Publish the module from its standalone `github.com/faustbrian/go-webhook` identity while preserving its documented API and behavior.
 - Refresh local `v0.0.0` owned-module checksums after dependency manifests and
   release notes were normalized; runtime behavior and public APIs are
   unchanged.
@@ -91,4 +94,5 @@ and Semantic Versioning.
 
 The first release will freeze the `v1` canonicalization and wire contracts.
 
-[Unreleased]: https://github.com/faustbrian/golib/commits/main/pkg/webhook
+[Unreleased]: https://github.com/faustbrian/go-webhook/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/faustbrian/go-webhook/releases/tag/v1.0.0
