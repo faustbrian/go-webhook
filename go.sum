@@ -8,13 +8,13 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/faustbrian/go-clock v1.0.0 h1:S98Gi1KHv2N6ZFV+3VlloP11zcMBFGnaAabBaG7+CtU=
 github.com/faustbrian/go-clock v1.0.0/go.mod h1:WKZ5p79IKGNTZGDp2L81cYjbsEjv3+9U0be7uwS8t6Y=
-github.com/faustbrian/go-idempotency v1.0.0 h1:mMRptzDYu01OW1rsNPJNh98WAYfYenLjd8ufie/jQTk=
+github.com/faustbrian/go-idempotency v1.0.0 h1:jYbnIttM0dADwHhnYEZ0LGwkR7d0Vu/LCDSKfOtdt0U=
 github.com/faustbrian/go-idempotency v1.0.0/go.mod h1:RjwDJ8Dj5/eKIBV/eIeXwuZHYE1C5WSCLSIuHZLKiN8=
 github.com/faustbrian/go-log v1.0.0 h1:u/MlvkLTzud3xaXk1rTrfgCQcpyUvlPEwL7ruAq+rcw=
 github.com/faustbrian/go-log v1.0.0/go.mod h1:hwFD9uvNXWat2MF855ncxF4opNWHjhsErO/mE6SUN6E=
 github.com/faustbrian/go-queue v1.0.0 h1:rwB9yEK6QhGAHN03/7oAf2vOmnwnqzLvtTmQTVvJjik=
 github.com/faustbrian/go-queue v1.0.0/go.mod h1:XQY6QpHS87WeYYt1Xs3lWiak1v099mZlC+TPPU7kB1M=
-github.com/faustbrian/go-telemetry v1.0.0 h1:w2JJO9aTWXEmfdVdl0CGcH8khrTSAVDO/WF9AdkAw3A=
+github.com/faustbrian/go-telemetry v1.0.0 h1:jI6ocg9x1rPJIqEDmawHSOhbmSP+wVb/y0DCMpl/0uY=
 github.com/faustbrian/go-telemetry v1.0.0/go.mod h1:3bs4hcIGr0FS11ZLPmnPc+Hy56zHGCJjhxtUxp/sozU=
 github.com/faustbrian/go-transactional-outbox v1.0.0 h1:FEsWt38eewedxXNzDCjFTiJp6nIn6MqyKltbxPc5NmA=
 github.com/faustbrian/go-transactional-outbox v1.0.0/go.mod h1:xfUyb0Wxg9+fN2RttzFgoAHZdHhG64WJRfpoDrKIJ58=
