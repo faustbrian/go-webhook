@@ -25,7 +25,7 @@
 
 - [FAQ](faq.md)
 - [Migration](migration.md)
-- [Release Verdict](release-verdict.md)
+- [Release process](release.md)
 
 ## Contributing
 

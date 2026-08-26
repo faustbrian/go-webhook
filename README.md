@@ -94,7 +94,7 @@ fixtures.
 - [Providers and interoperability](docs/providers.md)
 - [Audit matrices and evidence](docs/audit-matrices.md)
 - [Operations and troubleshooting](docs/operations.md)
-- [Release verdict](docs/release-verdict.md)
+- [Release process](docs/release.md)
 - [Migration and SemVer](docs/migration.md)
 - [FAQ](docs/faq.md)
 

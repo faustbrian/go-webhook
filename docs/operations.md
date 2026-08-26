@@ -1,4 +1,4 @@
-# Operations, troubleshooting, and release verdict
+# Operations and troubleshooting
 
 Monitor counts and latency by fixed operation/outcome/reason. Alert on replay
 store failures, policy rejection changes, terminal delivery rates, exhausted
