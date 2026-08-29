@@ -5,6 +5,11 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+### Documentation
+
+- Remove the archived monorepo documentation link; package guidance remains in
+  the repository-owned documentation.
+
 ## [1.0.0] - 2026-08-25
 
 ### Compatibility
