@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-webhook",
+  "module": ".",
+  "package": "adapters/outbox",
+  "gate": "mutation",
+  "input_digest": "sha256:9e555d0ebe5ebd5615d28c102fd9e3a2ca8afe93309dcf09475e63aa1bfcc70d",
+  "verifier_digest": "sha256:9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+  "result": "passed",
+  "report_digest": "sha256:36f4235c5319b554eed4116f4623e52a72d86c74cc48377af598207f89cdb78b",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "GOVERSION": "go1.27.0",
+    "gremlins_binary_sha256": "sha256:6a2beddc477eb410f8a670b6c9049558563d3c4327498fe31604d31c773a959e"
+  },
+  "completed_at": "2026-08-29T08:24:20.988959Z"
+}

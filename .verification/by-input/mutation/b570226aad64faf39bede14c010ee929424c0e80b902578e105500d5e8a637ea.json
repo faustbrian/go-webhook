@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-webhook",
+  "module": ".",
+  "package": "adapters/queue",
+  "gate": "mutation",
+  "input_digest": "sha256:b570226aad64faf39bede14c010ee929424c0e80b902578e105500d5e8a637ea",
+  "verifier_digest": "sha256:9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+  "result": "passed",
+  "report_digest": "sha256:a364197e73b307322e236126763000f0f27003b59bc5e624270eff9086a0ceb3",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "GOVERSION": "go1.27.0",
+    "gremlins_binary_sha256": "sha256:6a2beddc477eb410f8a670b6c9049558563d3c4327498fe31604d31c773a959e"
+  },
+  "completed_at": "2026-08-29T08:24:59.670375Z"
+}
