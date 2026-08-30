@@ -5,6 +5,12 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Adopt the versioned shared `golib` repository contract while keeping
+  webhook-specific API, mutation, interoperability, and delivery evidence in
+  this repository.
+
 ### Documentation
 
 - Remove the archived monorepo documentation link; package guidance remains in
