@@ -1,0 +1,27 @@
+decision_id	evidence_kind	peer_or_corpus	observed_behavior	classification	executable_evidence
+WEBHOOK-DEC-001	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestIndependentInteroperabilityVectors
+WEBHOOK-DEC-002	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestIndependentInteroperabilityVectors
+WEBHOOK-DEC-003	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestIndependentInteroperabilityVectors
+WEBHOOK-DEC-004	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestIndependentInteroperabilityVectors
+WEBHOOK-DEC-005	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestVerifyRequestRejectsMutationOfFixedSignedHeaders
+WEBHOOK-DEC-006	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestVerifierComparesCallerTimestampAtProtocolSecondPrecision
+WEBHOOK-DEC-007	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestSignerUsesOneInjectedNonceAcrossRotationSignatures
+WEBHOOK-DEC-008	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestParseSignatureHeadersRejectsMalformedOrAmbiguousInput
+WEBHOOK-DEC-009	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestCaptureBodyPreservesExactBytesAndRestoresRequest
+WEBHOOK-DEC-010	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestVerifierSkipsMalformedAndInactiveSignaturesDeterministically
+WEBHOOK-DEC-011	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestVerifyAndRecordAtomicallyRejectsReplay
+WEBHOOK-DEC-012	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestVerifyRequestExtractsEventIDAfterAuthentication
+WEBHOOK-DEC-013	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestEnvelopeMarshalIsDeterministicAndPreservesData
+WEBHOOK-DEC-014	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestDeliverPreservesRequestStatusAndResponseBoundaries
+WEBHOOK-DEC-015	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestDeliverRetriesRetryableStatusAndHonorsRetryAfter
+WEBHOOK-DEC-016	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestDeliverRetriesNetworkFailureAndStopsAtBound
+WEBHOOK-DEC-017	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestDeliverBoundsResponseBody
+WEBHOOK-DEC-018	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestDeliverDoesNotRetryTerminalStatusAndDeadLetters
+WEBHOOK-DEC-019	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestSSRFPolicyRejectsUnsafeURLsAndAddresses
+WEBHOOK-DEC-020	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestSSRFPolicyRejectsUnsafeURLsAndAddresses
+WEBHOOK-DEC-021	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestSecureHTTPClientRevalidatesDNSAtDialTime
+WEBHOOK-DEC-022	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestFanOutBoundsConcurrencyAndPreservesResultOrder
+WEBHOOK-DEC-023	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestInstrumentHTTPClientInjectsTraceAndPreservesClientPolicy
+WEBHOOK-DEC-024	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestIndependentInteroperabilityVectors
+WEBHOOK-DEC-025	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestDeliveryRequestWireRoundTripIsDeterministic
+WEBHOOK-DEC-026	not-assessed	Not assessed	No maintained peer comparison is currently pinned.	not assessed	TestIndependentInteroperabilityVectors
