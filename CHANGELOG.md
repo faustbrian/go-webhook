@@ -5,6 +5,12 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Adopt checksum-pinned `go-library-tools` v1.2.0 and its immutable workflow
+  so CI executes specification governance while keeping webhook-specific API,
+  mutation, interoperability, and delivery evidence in this repository.
+
 ### Documentation
 
 - Remove the archived monorepo documentation link; package guidance remains in
