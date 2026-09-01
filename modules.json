@@ -139,7 +139,8 @@
         "RFC 9421 HTTP Message Signatures comparison boundary",
         "IANA IPv4 and IPv6 Special-Purpose Address Registries at 2025-10-09",
         "CloudEvents 1.0.2 comparison boundary",
-        "W3C Trace Context Level 1"
+        "W3C Trace Context Level 1",
+        "Semantic Versioning 2.0.0"
       ],
       "conformance_corpora": [
         "Pinned normative-source matrix and 26-decision protocol register",

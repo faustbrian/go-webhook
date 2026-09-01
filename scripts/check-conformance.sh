@@ -34,7 +34,7 @@ done < <(tail -n +2 "${manifest}")
 
 required=(
 	go-webhook rfc2104 rfc4231 rfc4648 rfc3986 rfc3339 rfc8259 rfc8941 rfc9110
-	rfc9421 iana-ipv4 iana-ipv6 cloudevents trace-context
+	rfc9421 iana-ipv4 iana-ipv6 cloudevents trace-context semver
 )
 [[ "${count}" -eq "${#required[@]}" ]] || exit 1
 for id in "${required[@]}"; do
