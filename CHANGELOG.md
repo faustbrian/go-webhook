@@ -7,6 +7,15 @@ and Semantic Versioning.
 
 ### Changed
 
+- Upgrade `go-telemetry` to v1.1.1, selecting `google.golang.org/grpc`
+  v1.83.1 to remediate CVE-2026-84304 without changing the webhook API.
+
+- Upgrade checksum-pinned `go-library-tools` to v1.4.0 while retaining the
+  schema-v2 cohesion contract and local `make cohesion` gate.
+- Pin reusable CI to the v1.4.0 workflow so the required repository contract
+  enforces cohesion metadata alongside existing quality and specification
+  gates.
+
 - Adopt the `go-library-tools` v1.3.0 schema-v2 cohesion contract and local
   `make cohesion` gate without changing webhook API or runtime behavior.
 - Pin reusable CI to the v1.3.0 workflow so the required repository contract
