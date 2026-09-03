@@ -7,11 +7,33 @@ and Semantic Versioning.
 
 ### Changed
 
+- Upgrade `go-telemetry` to v1.1.1, selecting `google.golang.org/grpc`
+  v1.83.1 to remediate CVE-2026-84304 without changing the webhook API.
+
+- Upgrade checksum-pinned `go-library-tools` to v1.4.0 while retaining the
+  schema-v2 cohesion contract and local `make cohesion` gate.
+- Pin reusable CI to the v1.4.0 workflow so the required repository contract
+  enforces cohesion metadata alongside existing quality and specification
+  gates.
+
+- Adopt the `go-library-tools` v1.3.0 schema-v2 cohesion contract and local
+  `make cohesion` gate without changing webhook API or runtime behavior.
+- Pin reusable CI to the v1.3.0 workflow so the required repository contract
+  enforces cohesion metadata alongside existing quality and specification
+  gates.
+
 - Adopt checksum-pinned `go-library-tools` v1.2.0 and its immutable workflow
   so CI executes specification governance while keeping webhook-specific API,
   mutation, interoperability, and delivery evidence in this repository.
 
 ### Documentation
+
+- Record reported RFC 9110 Errata ID 9162 as behavior-neutral because webhook
+  authentication rejects repeated singleton fields and does not depend on
+  combined-field serialization; re-review it if the erratum becomes verified.
+
+- Publish the module's family, package-selection, ownership, lifecycle, and
+  support metadata, with versioned ecosystem and family-navigation links.
 
 - Remove the archived monorepo documentation link; package guidance remains in
   the repository-owned documentation.

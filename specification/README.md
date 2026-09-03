@@ -44,3 +44,5 @@ primitive comparison as maintained-peer agreement.
 
 Run `golib specification check` for structural validation and
 `golib specification check --online` to revalidate monitored authority bytes.
+Reviewed changes to monitored authorities are preserved in the append-only
+[upstream authority review history](upstream-reviews.md).

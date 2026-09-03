@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-webhook",
+  "module": ".",
+  "package": "adapters/idempotency",
+  "gate": "mutation",
+  "input_digest": "sha256:d09b76606b49278f02fda087d86525be2b6ab70d46b015ff2d0239c24567984c",
+  "verifier_digest": "sha256:9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+  "result": "passed",
+  "report_digest": "sha256:41ea9747fb2280e5fb1c4601b95be363d8dc1931905965c52bccef09f411af9b",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "GOVERSION": "go1.27.0",
+    "gremlins_binary_sha256": "sha256:6a2beddc477eb410f8a670b6c9049558563d3c4327498fe31604d31c773a959e"
+  },
+  "completed_at": "2026-09-03T09:20:31.989023Z"
+}
