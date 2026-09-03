@@ -28,6 +28,10 @@ and Semantic Versioning.
 
 ### Documentation
 
+- Record reported RFC 9110 Errata ID 9162 as behavior-neutral because webhook
+  authentication rejects repeated singleton fields and does not depend on
+  combined-field serialization; re-review it if the erratum becomes verified.
+
 - Publish the module's family, package-selection, ownership, lifecycle, and
   support metadata, with versioned ecosystem and family-navigation links.
 
