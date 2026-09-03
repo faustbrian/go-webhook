@@ -7,11 +7,20 @@ and Semantic Versioning.
 
 ### Changed
 
+- Adopt the `go-library-tools` v1.3.0 schema-v2 cohesion contract and local
+  `make cohesion` gate without changing webhook API or runtime behavior.
+- Pin reusable CI to the v1.3.0 workflow so the required repository contract
+  enforces cohesion metadata alongside existing quality and specification
+  gates.
+
 - Adopt checksum-pinned `go-library-tools` v1.2.0 and its immutable workflow
   so CI executes specification governance while keeping webhook-specific API,
   mutation, interoperability, and delivery evidence in this repository.
 
 ### Documentation
+
+- Publish the module's family, package-selection, ownership, lifecycle, and
+  support metadata, with versioned ecosystem and family-navigation links.
 
 - Remove the archived monorepo documentation link; package guidance remains in
   the repository-owned documentation.
