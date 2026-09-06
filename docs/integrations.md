@@ -2,12 +2,12 @@
 
 ## HTTP clients
 
-`Deliverer` accepts any `HTTPDoer`. The named `http-client` repository has
-no published Go module or API as of 2026-07-15, so no concrete import can be
-truthfully compiled. Its eventual client can integrate by implementing
-`Do(*http.Request) (*http.Response, error)`. It must preserve the SSRF policy,
-no-proxy transport, dial-time validation, redirect refusal, and response
-ownership supplied by `NewSecureHTTPClient`.
+`Deliverer` accepts any `HTTPDoer`. The released
+[`http-client`](https://pkg.go.dev/github.com/faustbrian/go-http-client)
+`Client` implements that interface without making it a required dependency.
+When substituting it for `NewSecureHTTPClient`, configure its egress, proxy,
+DNS, redirect, timeout, and response-ownership policies so they preserve the
+webhook delivery guarantees.
 
 ## Queue and outbox
 
