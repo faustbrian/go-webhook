@@ -106,7 +106,7 @@ and Semantic Versioning.
 
 - Replace obsolete standalone-repository links and workflow claims with
   monorepo-canonical targets and current release guidance.
-- Keep the initial `v1.0.0` scope under Unreleased until a tag is published.
+- Record the initial `v1.0.0` scope under its published release.
 
 - Link the package README to the repository-wide Golib documentation portal.
 
@@ -185,9 +185,9 @@ and Semantic Versioning.
 - Preserve and authenticate the exact case-sensitive HTTP method.
 - Clamp delivery latency observations when an injected clock moves backward.
 
-### Planned v1.0.0 scope
+### Published v1.0.0 scope
 
-The first release will freeze the `v1` canonicalization and wire contracts.
+The first release froze the `v1` canonicalization and wire contracts.
 
 [Unreleased]: https://github.com/faustbrian/go-webhook/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/faustbrian/go-webhook/releases/tag/v1.0.0
