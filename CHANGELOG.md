@@ -28,6 +28,10 @@ and Semantic Versioning.
 
 ### Documentation
 
+- Require Go 1.26.6 in the entry point, replace the obsolete unpublished
+  `http-client` guidance with its released optional integration, and replace
+  the pre-publication verdict with the published v1.0.0 verification record.
+
 - Link ecosystem and Protocols and descriptions family guidance to the
   immutable v1.4.0 documentation release.
 

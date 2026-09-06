@@ -28,8 +28,7 @@ Protocol ambiguities and application policies are recorded in the
 go get github.com/faustbrian/go-webhook
 ```
 
-Go 1.26 or newer is required because the optional published `outbox`
-adapter requires it.
+Go 1.26.6 or newer is required.
 
 ## Receive
 
@@ -94,7 +93,6 @@ fixtures.
 - [Providers and interoperability](docs/providers.md)
 - [Audit matrices and evidence](docs/audit-matrices.md)
 - [Operations and troubleshooting](docs/operations.md)
-- [Release verdict](docs/release-verdict.md)
 - [Migration and SemVer](docs/migration.md)
 - [FAQ](docs/faq.md)
 
