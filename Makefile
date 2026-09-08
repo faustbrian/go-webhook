@@ -1,11 +1,19 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: check ci inventory repository-check
+GOLIB ?= golib
+
+.PHONY: check ci cohesion inventory repository-check
 
 check:
-	./.golib/scripts/with-disposable-go-cache.sh ./.golib/scripts/run-modules.sh check --all
+	$(GOLIB) check --all
 
-ci: repository-check check
+ci: repository-check cohesion check
 
-inventory repository-check:
-	./.golib/scripts/repository-check.sh
+cohesion:
+	$(GOLIB) cohesion check
+
+inventory:
+	$(GOLIB) inventory
+
+repository-check:
+	$(GOLIB) repository check

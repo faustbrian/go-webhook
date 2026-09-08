@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "repository": "github.com/faustbrian/go-webhook",
   "go_version": "1.26.6",
   "modules": [
@@ -139,7 +139,8 @@
         "RFC 9421 HTTP Message Signatures comparison boundary",
         "IANA IPv4 and IPv6 Special-Purpose Address Registries at 2025-10-09",
         "CloudEvents 1.0.2 comparison boundary",
-        "W3C Trace Context Level 1"
+        "W3C Trace Context Level 1",
+        "Semantic Versioning 2.0.0"
       ],
       "conformance_corpora": [
         "Pinned normative-source matrix and 26-decision protocol register",
@@ -149,9 +150,187 @@
       "provenance": [
         "specification/manifest.tsv"
       ],
-      "goal_files": [],
-      "goal_status": "not-applicable",
-      "goal_evidence": [],
+      "goal_files": [
+        ".ai/GOAL.md",
+        ".ai/GOAL_HARDEN.md"
+      ],
+      "goal_status": "implementation-evidence-inventoried",
+      "goal_evidence": [
+        {
+          "file": ".ai/GOAL.md",
+          "requirements_sha256": "ff9145e81f44352b3beddb83fd3737084a092d1a1f5d853cd50282afdde6b710",
+          "implementation_evidence": [
+            "CHANGELOG.md",
+            "README.md",
+            "docs/api.md",
+            "docs/security.md"
+          ],
+          "verification_gates": [
+            "format-check",
+            "tidy-check",
+            "safety",
+            "vet",
+            "test",
+            "race",
+            "coverage",
+            "lint",
+            "staticcheck",
+            "vulnerability",
+            "secrets",
+            "licenses",
+            "sbom",
+            "fuzz",
+            "mutation",
+            "nilaway",
+            "docs",
+            "api",
+            "conformance",
+            "interoperability",
+            "benchmark"
+          ],
+          "implementation_status": "implemented-requires-fresh-verification"
+        },
+        {
+          "file": ".ai/GOAL_HARDEN.md",
+          "requirements_sha256": "6e1aeeef7984259d05e84da9e6007a020f3460a95e33109587b006a7b425ea81",
+          "implementation_evidence": [
+            "CHANGELOG.md",
+            "README.md",
+            "docs/api.md",
+            "docs/security.md"
+          ],
+          "verification_gates": [
+            "format-check",
+            "tidy-check",
+            "safety",
+            "vet",
+            "test",
+            "race",
+            "coverage",
+            "lint",
+            "staticcheck",
+            "vulnerability",
+            "secrets",
+            "licenses",
+            "sbom",
+            "fuzz",
+            "mutation",
+            "nilaway",
+            "docs",
+            "api",
+            "conformance",
+            "interoperability",
+            "benchmark"
+          ],
+          "implementation_status": "implemented-requires-fresh-verification"
+        }
+      ],
+      "cohesion": {
+        "family": "protocols-and-descriptions",
+        "secondary_capabilities": [
+          "cryptography-and-secrets",
+          "data-encoding",
+          "eventing-and-messaging",
+          "http-and-service-edge",
+          "observability",
+          "protocols-and-schemas",
+          "resilience-and-admission",
+          "transport-and-networking"
+        ],
+        "responsibility": "Provide protocol-independent webhook signing, exact-byte verification, replay protection, bounded delivery, and explicit adapters for durable and observable integrations.",
+        "non_goals": [
+          "Implement CloudEvents or claim conformance with RFC 9421 HTTP Message Signatures.",
+          "Provide vendor-specific webhook presets, payload schemas, application authorization, or exactly-once effects.",
+          "Own durable queues, outboxes, idempotency stores, logging, telemetry initialization, or application retry policy.",
+          "Follow redirects, trust environment proxies, or allow unsafe destinations without explicit caller policy."
+        ],
+        "public_package_identifier": "webhook",
+        "primary_entry_packages": [
+          "github.com/faustbrian/go-webhook"
+        ],
+        "package_selection": {
+          "github.com/faustbrian/go-webhook": "Use for generic webhook signing, verification, replay rejection, bounded HTTP delivery, and privacy-safe observations; select an adapter only when integrating an existing idempotency, queue, outbox, logging, or telemetry owner.",
+          "github.com/faustbrian/go-webhook/adapters/idempotency": "Use to adapt the webhook replay contract to a caller-supplied Golib idempotency store.",
+          "github.com/faustbrian/go-webhook/adapters/otel": "Use to record bounded webhook observations and instrument an explicitly supplied secure HTTP client with a caller-owned telemetry runtime.",
+          "github.com/faustbrian/go-webhook/adapters/outbox": "Use to encode delivery requests for a caller-owned transactional outbox and publish them through an explicitly supplied Deliverer.",
+          "github.com/faustbrian/go-webhook/adapters/queue": "Use to encode webhook delivery work for a caller-owned queue whose durable layer owns retries and settlement.",
+          "github.com/faustbrian/go-webhook/adapters/slog": "Use to map privacy-safe webhook observations to an explicitly supplied slog logger.",
+          "github.com/faustbrian/go-webhook/webhooktest": "Use in tests for deterministic signer, verifier, clock, nonce, and delivery fixtures without changing process-global state."
+        },
+        "lifecycle_status": "active",
+        "maturity": "stable",
+        "construction_styles": [
+          "new-config",
+          "plain-function",
+          "validated-value"
+        ],
+        "lifecycle_styles": [
+          "stateless"
+        ],
+        "ownership": {
+          "configuration": "caller",
+          "mutable_inputs": [
+            "borrow",
+            "copy"
+          ],
+          "runtime_resources": "caller",
+          "background_work": "none"
+        },
+        "optional_owned_dependencies": [],
+        "adapters": [
+          "github.com/faustbrian/go-webhook/adapters/idempotency",
+          "github.com/faustbrian/go-webhook/adapters/otel",
+          "github.com/faustbrian/go-webhook/adapters/outbox",
+          "github.com/faustbrian/go-webhook/adapters/queue",
+          "github.com/faustbrian/go-webhook/adapters/slog"
+        ],
+        "companions": [
+          "github.com/faustbrian/go-cloudevents",
+          "github.com/faustbrian/go-http-signature"
+        ],
+        "supported_go": {
+          "minimum": "1.26.6",
+          "tested": [
+            "1.26.6"
+          ]
+        },
+        "supported_platforms": [
+          "portable-go"
+        ],
+        "supported_backends": [
+          "idempotency",
+          "opentelemetry",
+          "queue",
+          "transactional-outbox"
+        ],
+        "supported_protocols": [
+          "hmac-sha-256",
+          "hmac-sha-512",
+          "http",
+          "json",
+          "w3c-trace-context",
+          "webhook-v1"
+        ],
+        "documentation": {
+          "readme": "README.md",
+          "api": "docs/api.md",
+          "adoption": "README.md",
+          "security": "docs/security.md",
+          "compatibility": "COMPATIBILITY.md",
+          "performance": "docs/audit-matrices.md",
+          "examples": "example_test.go",
+          "faq": "docs/faq.md",
+          "changelog": "CHANGELOG.md",
+          "pkg_go_dev": "https://pkg.go.dev/github.com/faustbrian/go-webhook",
+          "ecosystem_index": "https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/README.md"
+        },
+        "known_good_compatibility_sets": [],
+        "delivery": {
+          "implementation": "not-started",
+          "hardening": "not-started",
+          "release": "not-started"
+        }
+      },
       "gates": {
         "api_compatibility": true,
         "benchmarks": true,

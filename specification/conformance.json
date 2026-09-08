@@ -1,0 +1,552 @@
+{
+  "schema_version": 1,
+  "decisions": [
+    {
+      "id": "WEBHOOK-DEC-001",
+      "authoritative_sources": [
+        "rfc9421-source"
+      ],
+      "executable_evidence": [
+        "TestCanonicalizeProducesStableVersionedBytes",
+        "TestParseSignatureHeadersRejectsMalformedOrAmbiguousInput",
+        "TestIndependentInteroperabilityVectors"
+      ],
+      "fixtures": [
+        "testdata/vectors/v1.json"
+      ],
+      "fuzz": [
+        "FuzzCanonicalize",
+        "FuzzParseSignatureHeaders"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "`Webhook-Signature` `v1` is a local, versioned HMAC protocol specified by `docs/signatures.md`. It neither parses nor emits RFC 9421 `Signature` or `Signature-Input` fields and makes no provider claim. Negotiation is not implicit: unknown versions fail closed."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-002",
+      "authoritative_sources": [
+        "rfc2104-source",
+        "rfc4231-source"
+      ],
+      "executable_evidence": [
+        "TestSignerAndVerifierSupportSHA256AndSHA512",
+        "TestVerifierRejectsMutationOfEverySignedComponent",
+        "TestIndependentInteroperabilityVectors"
+      ],
+      "fixtures": [
+        "testdata/vectors/v1.json"
+      ],
+      "fuzz": [
+        "FuzzCanonicalize"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "A signer and verifier are configured for exactly one allow-listed `sha256` or `sha512` HMAC algorithm. The canonical body component is always SHA-256, including under HMAC-SHA-512. The algorithm name is signed, unknown algorithms are rejected, and no inbound header can widen the configured algorithm policy."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-003",
+      "authoritative_sources": [
+        "rfc4648-source"
+      ],
+      "executable_evidence": [
+        "TestCanonicalizeProducesStableVersionedBytes",
+        "TestIndependentInteroperabilityVectors"
+      ],
+      "fixtures": [
+        "testdata/vectors/v1.json"
+      ],
+      "fuzz": [
+        "FuzzCanonicalize"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "`v1` uses fixed ASCII labels in a fixed order, LF delimiters, a final empty line, and unpadded base64url for every variable byte field. It signs caller string bytes exactly and performs no Unicode normalization. Empty values remain explicit empty encoded fields."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-004",
+      "authoritative_sources": [
+        "rfc3986-source"
+      ],
+      "executable_evidence": [
+        "TestVerifierBindsDuplicateQueryValueOrder",
+        "TestVerifierRejectsMutationOfEverySignedComponent",
+        "TestSignAndVerifyRequestUsesRawBodyAndRestoresIt",
+        "TestIndependentInteroperabilityVectors"
+      ],
+      "fixtures": [
+        "testdata/vectors/v1.json"
+      ],
+      "fuzz": [
+        "FuzzCanonicalize"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Sign the exact nonempty method with case preserved; use `EscapedPath` with `/` for an empty path; parse the raw query using Go form semantics; sort keys through `Values.Encode`; preserve duplicate value order; and emit Go's canonical escaping. Semantically equivalent raw query spellings can therefore share canonical bytes, while reordered duplicate values do not."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-005",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestVerifyRequestRejectsMutationOfFixedSignedHeaders",
+        "TestVerifyRequestRejectsDuplicateSignedHeaderBeforeBodyRead"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzParseSignatureHeaders"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Lowercase the request host while preserving an explicit port. Bind exactly one UTF-8 `Content-Type` and `Idempotency-Key` value, each bounded to 256 bytes; absence is an explicit empty canonical field. Duplicate, line-breaking, oversized, or invalid UTF-8 values fail before body capture. Trace fields remain outside the signature."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-006",
+      "authoritative_sources": [
+        "rfc3339-source"
+      ],
+      "executable_evidence": [
+        "TestVerifierComparesCallerTimestampAtProtocolSecondPrecision",
+        "TestVerifierTimestampToleranceBoundaries"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzTimestampVerification"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "`v1` signs a canonical nonnegative Unix-second integer. Signer inputs are truncated to that precision. Verifiers accept absolute skew less than or equal to the configured tolerance, compare caller-provided timestamps by Unix second, and reject negative, noncanonical, overflowing, or outside-window values."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-007",
+      "authoritative_sources": [
+        "rfc2104-source"
+      ],
+      "executable_evidence": [
+        "TestSignerUsesOneInjectedNonceAcrossRotationSignatures",
+        "TestSignerSelectsRotationKeyAtSignedTimestamp",
+        "TestRotationSignsAllActiveKeysAndAcceptsOverlap"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzTimestampVerification"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Every signature carries a nonempty valid UTF-8 nonce bounded to 128 bytes. The default is 18 random bytes encoded as base64url. One nonce is shared across all signatures in one operation. Signers emit every non-revoked key active at the normalized signed timestamp, newest first with key-ID tie-breaking; verifiers use that same timestamp. Duplicate IDs and inverted validity windows are configuration errors."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-008",
+      "authoritative_sources": [
+        "rfc8941-source"
+      ],
+      "executable_evidence": [
+        "TestParseSignatureHeadersRejectsMalformedOrAmbiguousInput",
+        "TestParseSignatureHeadersAppliesLimitsBeforeDecoding",
+        "TestSignatureHeadersRoundTripMultipleRotationSignatures"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzParseSignatureHeaders"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Each active key produces one separate `Webhook-Signature` field line with fixed parameter order and exact lowercase names. Comma combination, padding, whitespace variation, duplicate or unknown parameters, duplicate key IDs, noncanonical timestamps, invalid encodings, and any malformed sibling reject the entire bounded set."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-009",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestCaptureBodyPreservesExactBytesAndRestoresRequest",
+        "TestCaptureBodyBoundsUnknownLengthBeforeAllocation",
+        "TestCaptureBodyAfterPriorReadAuthenticatesOnlyRemainingBytes"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Bound declared size before reading, read at most the configured limit plus one byte, hash the exact remaining stream bytes without decoding or normalization, close the original body, and restore an independent reader. Verification must be first; previously consumed bytes cannot be reconstructed and only the remaining bytes are authenticated."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-010",
+      "authoritative_sources": [
+        "rfc2104-source"
+      ],
+      "executable_evidence": [
+        "TestVerifierSkipsMalformedAndInactiveSignaturesDeterministically",
+        "TestVerificationErrorMethodsAreNilSafe"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "After strict set parsing, the verifier examines candidates in wire order and accepts the first active configured key whose MAC passes `hmac.Equal`. Invalid candidates do not alter later candidate state. External errors expose stable categories and the fixed message `webhook verification failed`; internal diagnostics remain separate and secret-safe. This is not a constant-runtime claim across public candidate metadata."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-011",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestVerifyAndRecordAtomicallyRejectsReplay",
+        "TestReplayIdentitySurvivesSecretRotation",
+        "TestVerifyAndRecordFailsClosedForMissingIDAndStoreFailure"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Optional replay protection hashes a length-prefixed domain string, required namespace, and authenticated event ID with SHA-256. It deliberately excludes key ID so overlap signatures share one replay identity. `ReplayStore.CheckAndRecord` must atomically create only an absent key with expiry. Duplicate and backend error both fail closed. This prevents concurrent acceptance but does not claim exactly-once processing."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-012",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestVerifyRequestExtractsEventIDAfterAuthentication",
+        "TestHeaderEventIDRejectsDuplicateAndOversizedValues"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "`VerifyRequest` authenticates strict fields and exact body first, then invokes the configured extractor, then atomically records replay state. `HeaderEventID` requires one bounded UTF-8 field. Extractor errors map to a safe missing-ID category and unauthenticated requests cannot touch replay storage."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-013",
+      "authoritative_sources": [
+        "cloudevents-core-v1.0.2"
+      ],
+      "executable_evidence": [
+        "TestEnvelopeMarshalIsDeterministicAndPreservesData",
+        "TestEnvelopeRejectsInvalidRequiredFieldsAndData"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzEnvelope"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "The output is a deterministic local v1 JSON envelope, not a CloudEvents implementation or interoperability claim. It requires ID, type, source, nonzero time, and valid JSON data; emits UTC RFC3339Nano time and `application/json`; preserves raw data; and orders fields through a fixed Go struct. Metadata is a nested local object."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-014",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestDeliverPreservesRequestStatusAndResponseBoundaries",
+        "TestVerifyRequestRejectsMutationOfFixedSignedHeaders"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "`Deliverer` always emits POST with `Content-Type: application/json`, preserves other cloned caller headers, and emits `Idempotency-Key` only when explicitly supplied. Both fixed field values are signed. The package does not claim that a receiver honors that application-defined idempotency field."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-015",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestDeliverRetriesRetryableStatusAndHonorsRetryAfter",
+        "TestRetryAfterSupportsHTTPDateAndCapsDelay",
+        "TestRetryPolicyCapsOverflowingRetryAfterSeconds"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Retry transport failures and exactly 408, 425, 429, 500, 502, 503, and 504. Any 2xx succeeds; every other status is terminal. Parse nonnegative delta-seconds or a future HTTP-date, cap at `MaxDelay`, and otherwise use capped exponential delay. Overflow saturates before capping; cancellation interrupts backoff."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-016",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestDeliverRetriesNetworkFailureAndStopsAtBound",
+        "TestDeliverOnceDisablesInternalRetries",
+        "TestHandleUsesSingleDeliveryAttempt",
+        "TestPublisherPerformsSingleAttemptForRelay"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "`Deliver` forces one attempt when no explicit idempotency key exists. `DeliverOnce` always performs one attempt and is mandatory for queue/outbox consumers, leaving durable retry ownership outside the core. This reduces duplicate risk but still makes no exactly-once claim about a remote endpoint."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-017",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestDeliverBoundsResponseBody",
+        "TestReadResponseRejectsMissingReadAndCloseFailures",
+        "TestDeliverClassifiesCanceledTransportAndExhaustedStatus"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Require positive request and response bounds that leave room for a sentinel byte. Read at most response limit plus one, close on every path, reject missing bodies and read/close failures, and classify each attempt as none, retryable, terminal, or exhausted. Diagnostic strings remain fixed and payloads or sensitive fields are not recorded."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-018",
+      "authoritative_sources": [
+        "rfc9110-source"
+      ],
+      "executable_evidence": [
+        "TestDeliverDoesNotRetryTerminalStatusAndDeadLetters",
+        "TestDeliveryPreservesDeadLetterHookFailure",
+        "TestReplayAuditsBeforeStartingNewDelivery"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Terminal and exhausted deliveries invoke an optional bounded-result `DeadLetterFunc`. Operator `Replay` invokes its audit hook before creating a new delivery ID and never reuses an attempt ID. Hook failures are returned; observer panics are contained, while lifecycle hook ownership remains explicit. The core stores nothing."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-019",
+      "authoritative_sources": [
+        "rfc3986-source"
+      ],
+      "executable_evidence": [
+        "TestSSRFPolicyRejectsUnsafeURLsAndAddresses",
+        "TestSSRFPolicyAllowsExplicitPrefixOnlyWhenConfigured"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzSSRFPolicy"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Require an absolute hierarchical URL with host; exact lowercase `https` is default and lowercase `http` is opt-in. Reject opaque forms, userinfo, fragments, empty hosts, non-ASCII hosts, trailing-dot hosts, malformed ports, and ports outside 1-65535. Do not silently IDNA-convert or rewrite attacker input."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-020",
+      "authoritative_sources": [
+        "iana-ipv4-source",
+        "iana-ipv6-source"
+      ],
+      "executable_evidence": [
+        "TestSSRFPolicyRejectsUnsafeURLsAndAddresses",
+        "TestSSRFPolicyRejectsMixedAndOversizedDNSAnswers"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzSSRFPolicy"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Unmap IPv4-mapped IPv6; deny invalid, private, loopback, link-local, multicast, unspecified, and non-global-unicast addresses; additionally deny the explicit pinned special-purpose prefixes in `reservedPrefixes`. Caller deny prefixes win over caller allow prefixes. Explicit allow prefixes are narrow operator exceptions. Every DNS answer must pass and answer count is bounded."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-021",
+      "authoritative_sources": [
+        "go-net-http-source"
+      ],
+      "executable_evidence": [
+        "TestSecureHTTPClientRevalidatesDNSAtDialTime",
+        "TestSecureHTTPClientRejectsRedirectWithoutContactingTarget",
+        "TestSecureHTTPClientConfigurationAndTransportFailures"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzSSRFPolicy"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Validate immediately before every attempt and again in the transport; re-resolve at dial time; validate every answer; dial only validated addresses; disable environment proxies; return redirects without following; and disable automatic HTTP/2 on this custom transport so its direct validated dial ownership remains explicit. TLS certificate and hostname verification remain with `net/http`."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-022",
+      "authoritative_sources": [
+        "go-language-source"
+      ],
+      "executable_evidence": [
+        "TestFanOutBoundsConcurrencyAndPreservesResultOrder",
+        "TestFanOutRejectsUnboundedInputs"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "`FanOut` rejects input beyond `MaxFanOut`, requires a positive worker limit, uses a fixed worker bound, and returns one result per input in input order. Cancellation prevents new useful work but does not claim to interrupt a remote side effect already in flight. Fan-out is not a durable queue."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-023",
+      "authoritative_sources": [
+        "trace-context-source"
+      ],
+      "executable_evidence": [
+        "TestInstrumentHTTPClientInjectsTraceAndPreservesClientPolicy",
+        "TestVerifierObservesVerificationAndReplayWithoutSensitiveData",
+        "TestObserverRecordsBoundedMetricsAndCurrentSpanEvent"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Core observations contain only fixed operation, outcome, reason, algorithm, status class, attempt, and bounded duration fields. They exclude payload, signature, secret, endpoint, event ID, replay key, and raw error text. The optional telemetry wrapper injects trace context after signing, so trace rotation does not invalidate the MAC, and preserves the caller's secure transport policy."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-024",
+      "authoritative_sources": [
+        "rfc2104-source"
+      ],
+      "executable_evidence": [
+        "TestIndependentInteroperabilityVectors",
+        "TestParseSignatureHeadersRejectsMalformedOrAmbiguousInput"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "No provider preset is supported. Vendor names cannot enter the supported matrix until an isolated package has authoritative versioned documentation, independent positive vectors, negative mutations, rotation and retry semantics, and a maintenance owner. Generic `v1` remains provider-independent."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-025",
+      "authoritative_sources": [
+        "rfc8259-source"
+      ],
+      "executable_evidence": [
+        "TestDeliveryRequestWireRoundTripIsDeterministic",
+        "TestDeliveryRequestWireRejectsLimitsAndMalformedData",
+        "TestDeliveryWireRejectsEachUnsafeFieldIndependently"
+      ],
+      "fixtures": [],
+      "fuzz": [
+        "FuzzDeliveryWire"
+      ],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Marshal a dedicated `v1` JSON shape with endpoint string, copied body, IDs, headers, and metadata under an exact byte limit. Decode one JSON value with unknown-field rejection and no trailing data, reconstruct and validate the endpoint, copy mutable collections, and reject unsafe required fields. Deterministic Go JSON output is contractual for equivalent values."
+      ]
+    },
+    {
+      "id": "WEBHOOK-DEC-026",
+      "authoritative_sources": [
+        "semver-source"
+      ],
+      "executable_evidence": [
+        "TestIndependentInteroperabilityVectors",
+        "TestDeliveryRequestWireRoundTripIsDeterministic"
+      ],
+      "fixtures": [],
+      "fuzz": [],
+      "interoperability_evidence": [],
+      "interoperability_classification": "not assessed",
+      "differential_evidence": [],
+      "differential_classification": "not assessed",
+      "public_behavior": [
+        "Canonical bytes, field grammar, algorithm identifiers, envelope and delivery JSON, exported error identity, retry classification, replay identity, endpoint defaults, and established provider profiles are compatibility surfaces. Wire changes require a new protocol version and normally major impact. Security fixes may reject formerly accepted unsafe input but require explicit changelog and migration review. Unknown or unresolved behavior cannot become a silent default."
+      ]
+    }
+  ]
+}
