@@ -41,7 +41,6 @@ and Semantic Versioning.
 
 - Replace obsolete standalone-repository links and workflow claims with
   monorepo-canonical targets and current release guidance.
-- Keep the initial `v1.0.0` scope under Unreleased until a tag is published.
 
 - Link the package README to package-owned documentation.
 

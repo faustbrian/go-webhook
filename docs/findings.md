@@ -19,7 +19,7 @@
 | Medium | Linux safety scanning included cgo-enabled standard-library variants | CI contradicted `GO-SAFETY-1` even though module sources contained no cgo | failing Linux quality job and pure-Go dependency scan | Resolved: the safety scan enforces `CGO_ENABLED=0` without disabling cgo required by the Linux race detector |
 | Low | An injected clock moving backward emitted negative latency | Test clocks and wall-clock adjustments could corrupt metrics | regressing-clock observation regression | Resolved: observed durations saturate at zero |
 | Low | A body consumed before verification cannot be reconstructed | Misordered trusted middleware | prior-read characterization test and inbound guide | Accepted: verification must be first; authenticated context exposes only remaining exact bytes |
-| Low | Named `http-client` integration is unavailable | External repository has no published Go module or API | module lookup documented in integration guide | Accepted: `HTTPDoer` is the compile-time seam until an API exists |
+| Low | Named `http-client` integration was unavailable | External repository initially had no published Go module or API | published v1.0.0 `Client.Do` contract and integration guide | Resolved: the released client implements `HTTPDoer` while remaining optional |
 
 No open critical, high, or medium finding remains. Provider support remains
 intentionally empty rather than making a claim without authoritative vectors.

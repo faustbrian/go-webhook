@@ -26,4 +26,4 @@ Override `FUZZWORKERS` only when the runner has a deliberate resource budget.
 
 Current residual risks: HMAC security depends on operator-generated secrets;
 durability depends on the supplied replay/queue/outbox stores; explicit SSRF
-allow prefixes weaken defaults; and `http-client` has no published API.
+allow prefixes weaken defaults.
