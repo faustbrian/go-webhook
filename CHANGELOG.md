@@ -7,6 +7,14 @@ and Semantic Versioning.
 
 ### Changed
 
+- Upgrade checksum-pinned `go-library-tools` and reusable CI to v1.6.1 so pull
+  requests use the proportional offline contract while mutable authority
+  monitoring remains scheduled maintenance.
+
+- Upgrade `go-telemetry` to v1.2.0 and consume its public
+  `instrumentation/httpclient` adapter without changing webhook HTTP client
+  instrumentation behavior.
+
 - Upgrade `go-telemetry` to v1.1.1, selecting `google.golang.org/grpc`
   v1.83.1 to remediate CVE-2026-84304 without changing the webhook API.
 
