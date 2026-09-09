@@ -32,11 +32,6 @@ and Semantic Versioning.
 
 ### Documentation
 
-- Record reported RFC 9110 Errata ID 9164 as behavior-neutral because webhook
-  does not generate or compare the equivalent collected ABNF renderings.
-- Re-review the W3C Trace Context publication history after a site-only change;
-  the selected Level 1 Recommendation and webhook propagation remain unchanged.
-
 - Require Go 1.26.6 in the entry point, replace the obsolete unpublished
   `http-client` guidance with its released optional integration, and replace
   the pre-publication verdict with the published v1.0.0 verification record.
