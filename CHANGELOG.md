@@ -7,6 +7,9 @@ and Semantic Versioning.
 
 ### Changed
 
+- Require Go 1.27.0 for the module and test the current contract on that
+  toolchain.
+
 - Upgrade checksum-pinned `go-library-tools` and reusable CI to v1.6.1 so pull
   requests use the proportional offline contract while mutable authority
   monitoring remains scheduled maintenance.

@@ -15,7 +15,7 @@ All exported declarations have Go documentation; run `go doc -all .` and
 complete generated reference.
 
 `NonceGenerator`, clocks, delivery IDs, sleeps, and resolvers are injectable.
-Compatibility is checked on Go 1.26.6. Canonical bytes, signature header syntax,
+Compatibility is checked on Go 1.27.0. Canonical bytes, signature header syntax,
 envelope JSON, exported error identity, replay key derivation, retry
 classification, and provider preset behavior are SemVer-governed wire or
 behavioral contracts. Adding a field whose zero value preserves behavior may
