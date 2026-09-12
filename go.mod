@@ -5,7 +5,7 @@ go 1.27.0
 require (
 	github.com/faustbrian/go-idempotency v1.0.0
 	github.com/faustbrian/go-log v1.0.0
-	github.com/faustbrian/go-queue v1.0.0
+	github.com/faustbrian/go-queue v1.1.0
 	github.com/faustbrian/go-telemetry v1.2.0
 	github.com/faustbrian/go-transactional-outbox v1.0.0
 	go.opentelemetry.io/otel v1.44.0
