@@ -128,7 +128,7 @@
         "Python 3 standard-library HMAC-SHA-256 and HMAC-SHA-512 vectors"
       ],
       "specifications": [
-        "Go 1.27.0 cryptography, HTTP, URL, address, time, and encoding contracts",
+        "Go 1.26.6 cryptography, HTTP, URL, address, time, and encoding contracts",
         "RFC 2104 HMAC and RFC 4231 HMAC-SHA-256/HMAC-SHA-512 vectors",
         "RFC 4648 Base-N Encodings",
         "RFC 3986 URI Generic Syntax",
