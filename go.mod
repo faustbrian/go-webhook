@@ -1,6 +1,6 @@
 module github.com/faustbrian/go-webhook
 
-go 1.26.6
+go 1.27.0
 
 require (
 	github.com/faustbrian/go-idempotency v1.0.0
