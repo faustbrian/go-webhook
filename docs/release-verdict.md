@@ -1,6 +1,6 @@
 # Release and verification record
 
-## Published result
+## Historical v1 publication
 
 `v1.0.0` was published on 2026-08-26. The published
 [GitHub release](https://github.com/faustbrian/go-webhook/releases/tag/v1.0.0)
@@ -13,6 +13,11 @@ No critical, high, or medium finding remained open at publication. The generic
 SHA-256 and SHA-512 schemes had independent vectors, and the provider matrix
 intentionally claimed no provider preset without authoritative conformance
 evidence.
+
+The v2 release decision requires a green exact-main repository gate and
+release rehearsal, a signed `v2.0.0` tag at that main commit, a public GitHub
+release, and a clean public-proxy consumer using the `/v2` import path.
+Source delivery or a local compatibility check alone is not a release verdict.
 
 ## Release verification commands
 

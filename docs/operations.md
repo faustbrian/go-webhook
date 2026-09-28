@@ -18,8 +18,9 @@ Common failures:
 Release is blocked by any red `make check`, `make safety`, or
 `make interoperability` gate, canonical drift, coverage below 100%, race/fuzz
 failure, unresolved high/medium finding, or unsupported provider claim. The
-release workflow verifies the tag matches `v<module version intent>`, runs all
-gates, and publishes source artifacts through GitHub Releases.
+release rehearsal verifies the intended module version. Publication requires a
+signed tag on the verified main commit, a GitHub release, and public-proxy and
+clean-consumer checks.
 
 Fuzzing defaults to four workers so results do not depend on host CPU count.
 Override `FUZZWORKERS` only when the runner has a deliberate resource budget.

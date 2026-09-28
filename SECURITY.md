@@ -2,10 +2,9 @@
 
 ## Supported versions
 
-Security fixes are applied to the latest stable v1 release and `main`; users
-must pin an exact version and review every upgrade. Fixes
-are backported only when the maintainer explicitly announces a supported
-branch.
+Security fixes are applied to the latest published stable major and `main`;
+users must pin an exact version and review every upgrade. Earlier majors
+receive fixes only when the maintainer explicitly announces support.
 
 ## Reporting
 
