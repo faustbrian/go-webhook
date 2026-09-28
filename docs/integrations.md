@@ -24,7 +24,7 @@ classification, attempt, bounded status, and duration fields. Adapt it to a
 metric or trace backend without adding event ID, URL, host, query, payload,
 signature, key ID, header, or raw error attributes.
 
-For `telemetry`, pass its initialized runtime to
+For `telemetry/v2`, pass its initialized runtime to
 `adapters/otel.New`. The adapter records fixed metrics and adds an event
 to the current span. `InstrumentHTTPClient` clones an existing explicit client
 and wraps its transport with tracing, metrics, and W3C propagation; use the
@@ -33,6 +33,13 @@ base transport. `adapters/slog.New` accepts the `*slog.Logger` returned by
 `log` and emits only the fixed observation schema. Its redaction handler is
 still recommended as defense in depth. Disabled telemetry is a nil `Observer`
 and has no business-path dependency.
+
+Version 2 telemetry disables traces, metrics, and global registration by
+default. Explicitly enable the signals the application needs. The webhook
+adapter uses the supplied runtime directly, so global registration is not
+required for it; enable registration only if other application code relies on
+OpenTelemetry globals. Plaintext Collector transport now requires an explicit
+opt-in and should be used only within a protected trust zone.
 
 ## Deterministic consumer tests
 

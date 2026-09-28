@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	webhook "github.com/faustbrian/go-webhook"
+	webhook "github.com/faustbrian/go-webhook/v2"
 )
 
 func TestFixtureProvidesDeterministicClockNoncesIDsAndPair(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	telemetry "github.com/faustbrian/go-telemetry"
+	telemetry "github.com/faustbrian/go-telemetry/v2"
 	"go.opentelemetry.io/otel/trace"
 )
 

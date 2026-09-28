@@ -5,14 +5,14 @@
   "modules": [
     {
       "directory": ".",
-      "module_path": "github.com/faustbrian/go-webhook",
+      "module_path": "github.com/faustbrian/go-webhook/v2",
       "go_version": "1.27.0",
       "packages": [
         {
           "module_directory": ".",
           "directory": ".",
           "name": "webhook",
-          "import_path": "github.com/faustbrian/go-webhook",
+          "import_path": "github.com/faustbrian/go-webhook/v2",
           "kind": "public",
           "production": true,
           "executable": true,
@@ -24,7 +24,7 @@
           "module_directory": ".",
           "directory": "adapters/idempotency",
           "name": "webhookidempotency",
-          "import_path": "github.com/faustbrian/go-webhook/adapters/idempotency",
+          "import_path": "github.com/faustbrian/go-webhook/v2/adapters/idempotency",
           "kind": "public",
           "production": true,
           "executable": true,
@@ -36,7 +36,7 @@
           "module_directory": ".",
           "directory": "adapters/otel",
           "name": "webhookotel",
-          "import_path": "github.com/faustbrian/go-webhook/adapters/otel",
+          "import_path": "github.com/faustbrian/go-webhook/v2/adapters/otel",
           "kind": "public",
           "production": true,
           "executable": true,
@@ -48,7 +48,7 @@
           "module_directory": ".",
           "directory": "adapters/outbox",
           "name": "webhookoutbox",
-          "import_path": "github.com/faustbrian/go-webhook/adapters/outbox",
+          "import_path": "github.com/faustbrian/go-webhook/v2/adapters/outbox",
           "kind": "public",
           "production": true,
           "executable": true,
@@ -60,7 +60,7 @@
           "module_directory": ".",
           "directory": "adapters/queue",
           "name": "webhookqueue",
-          "import_path": "github.com/faustbrian/go-webhook/adapters/queue",
+          "import_path": "github.com/faustbrian/go-webhook/v2/adapters/queue",
           "kind": "public",
           "production": true,
           "executable": true,
@@ -72,7 +72,7 @@
           "module_directory": ".",
           "directory": "adapters/slog",
           "name": "webhookslog",
-          "import_path": "github.com/faustbrian/go-webhook/adapters/slog",
+          "import_path": "github.com/faustbrian/go-webhook/v2/adapters/slog",
           "kind": "public",
           "production": true,
           "executable": true,
@@ -84,7 +84,7 @@
           "module_directory": ".",
           "directory": "webhooktest",
           "name": "webhooktest",
-          "import_path": "github.com/faustbrian/go-webhook/webhooktest",
+          "import_path": "github.com/faustbrian/go-webhook/v2/webhooktest",
           "kind": "test support",
           "production": false,
           "executable": true,
@@ -101,14 +101,14 @@
       "family_label": "Protocols And Descriptions",
       "family_description": "Standards, envelopes, schemas, descriptions, signatures, and wire interoperability.",
       "family_order": 3,
-      "version": "1.0.0",
+      "version": "2.0.0",
       "tag_prefix": "v",
       "owned_dependencies": [
         "github.com/faustbrian/go-idempotency",
         "github.com/faustbrian/go-log",
         "github.com/faustbrian/go-transactional-outbox",
         "github.com/faustbrian/go-queue",
-        "github.com/faustbrian/go-telemetry"
+        "github.com/faustbrian/go-telemetry/v2"
       ],
       "reverse_owned_dependencies": [
         "github.com/faustbrian/go-idempotency/compatibility/ecosystem",
@@ -246,16 +246,16 @@
         ],
         "public_package_identifier": "webhook",
         "primary_entry_packages": [
-          "github.com/faustbrian/go-webhook"
+          "github.com/faustbrian/go-webhook/v2"
         ],
         "package_selection": {
-          "github.com/faustbrian/go-webhook": "Use for generic webhook signing, verification, replay rejection, bounded HTTP delivery, and privacy-safe observations; select an adapter only when integrating an existing idempotency, queue, outbox, logging, or telemetry owner.",
-          "github.com/faustbrian/go-webhook/adapters/idempotency": "Use to adapt the webhook replay contract to a caller-supplied Golib idempotency store.",
-          "github.com/faustbrian/go-webhook/adapters/otel": "Use to record bounded webhook observations and instrument an explicitly supplied secure HTTP client with a caller-owned telemetry runtime.",
-          "github.com/faustbrian/go-webhook/adapters/outbox": "Use to encode delivery requests for a caller-owned transactional outbox and publish them through an explicitly supplied Deliverer.",
-          "github.com/faustbrian/go-webhook/adapters/queue": "Use to encode webhook delivery work for a caller-owned queue whose durable layer owns retries and settlement.",
-          "github.com/faustbrian/go-webhook/adapters/slog": "Use to map privacy-safe webhook observations to an explicitly supplied slog logger.",
-          "github.com/faustbrian/go-webhook/webhooktest": "Use in tests for deterministic signer, verifier, clock, nonce, and delivery fixtures without changing process-global state."
+          "github.com/faustbrian/go-webhook/v2": "Use for generic webhook signing, verification, replay rejection, bounded HTTP delivery, and privacy-safe observations; select an adapter only when integrating an existing idempotency, queue, outbox, logging, or telemetry owner.",
+          "github.com/faustbrian/go-webhook/v2/adapters/idempotency": "Use to adapt the webhook replay contract to a caller-supplied Golib idempotency store.",
+          "github.com/faustbrian/go-webhook/v2/adapters/otel": "Use to record bounded webhook observations and instrument an explicitly supplied secure HTTP client with a caller-owned telemetry runtime.",
+          "github.com/faustbrian/go-webhook/v2/adapters/outbox": "Use to encode delivery requests for a caller-owned transactional outbox and publish them through an explicitly supplied Deliverer.",
+          "github.com/faustbrian/go-webhook/v2/adapters/queue": "Use to encode webhook delivery work for a caller-owned queue whose durable layer owns retries and settlement.",
+          "github.com/faustbrian/go-webhook/v2/adapters/slog": "Use to map privacy-safe webhook observations to an explicitly supplied slog logger.",
+          "github.com/faustbrian/go-webhook/v2/webhooktest": "Use in tests for deterministic signer, verifier, clock, nonce, and delivery fixtures without changing process-global state."
         },
         "lifecycle_status": "active",
         "maturity": "stable",
@@ -278,11 +278,11 @@
         },
         "optional_owned_dependencies": [],
         "adapters": [
-          "github.com/faustbrian/go-webhook/adapters/idempotency",
-          "github.com/faustbrian/go-webhook/adapters/otel",
-          "github.com/faustbrian/go-webhook/adapters/outbox",
-          "github.com/faustbrian/go-webhook/adapters/queue",
-          "github.com/faustbrian/go-webhook/adapters/slog"
+          "github.com/faustbrian/go-webhook/v2/adapters/idempotency",
+          "github.com/faustbrian/go-webhook/v2/adapters/otel",
+          "github.com/faustbrian/go-webhook/v2/adapters/outbox",
+          "github.com/faustbrian/go-webhook/v2/adapters/queue",
+          "github.com/faustbrian/go-webhook/v2/adapters/slog"
         ],
         "companions": [
           "github.com/faustbrian/go-cloudevents",
@@ -321,7 +321,7 @@
           "examples": "example_test.go",
           "faq": "docs/faq.md",
           "changelog": "CHANGELOG.md",
-          "pkg_go_dev": "https://pkg.go.dev/github.com/faustbrian/go-webhook",
+          "pkg_go_dev": "https://pkg.go.dev/github.com/faustbrian/go-webhook/v2",
           "ecosystem_index": "https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/README.md"
         },
         "known_good_compatibility_sets": [],

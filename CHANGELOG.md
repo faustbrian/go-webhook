@@ -5,7 +5,14 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-28
+
 ### Changed
+
+- Move the module and its package imports to `/v2` because the optional
+  telemetry adapter now accepts `go-telemetry/v2` runtimes. Migrate webhook
+  imports to `/v2` and pass a v2 runtime to the adapter; webhook signing,
+  verification, delivery, and observation policies are unchanged.
 
 - Require Go 1.27.0 for the module and test the current contract on that
   toolchain.
@@ -200,5 +207,6 @@ and Semantic Versioning.
 
 The first release froze the `v1` canonicalization and wire contracts.
 
-[Unreleased]: https://github.com/faustbrian/go-webhook/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/faustbrian/go-webhook/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/faustbrian/go-webhook/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/faustbrian/go-webhook/releases/tag/v1.0.0

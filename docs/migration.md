@@ -1,5 +1,21 @@
 # Migration and SemVer
 
+## Version 2 module migration
+
+Change all `github.com/faustbrian/go-webhook` package imports to
+`github.com/faustbrian/go-webhook/v2`. The optional `adapters/otel` entry points
+now take `*telemetry.Runtime` from
+`github.com/faustbrian/go-telemetry/v2`; migrate the telemetry runtime import
+and construction at the same time. The webhook signing, verification, replay,
+delivery, and observation contracts are otherwise unchanged.
+
+Telemetry v2 does not implicitly enable traces, metrics, or global
+registration. Configure each signal your application requires explicitly;
+the webhook adapter does not require global registration because it receives
+the runtime directly. For protected plaintext Collector connections, set the
+trace and metric exporter TLS `Insecure` options explicitly. See the
+[telemetry v2 migration contract](https://github.com/faustbrian/go-telemetry/blob/v2.0.0/docs/compatibility.md#version-2-migration).
+
 There is no legacy API before v1. Adoption should first deploy verification in
 shadow observation mode using synthetic fixtures, then enforce signatures,
 then enable a tenant-scoped replay store, and finally enable outbound retries

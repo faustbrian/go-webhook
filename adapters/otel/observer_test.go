@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	telemetry "github.com/faustbrian/go-telemetry"
-	webhook "github.com/faustbrian/go-webhook"
+	telemetry "github.com/faustbrian/go-telemetry/v2"
+	webhook "github.com/faustbrian/go-webhook/v2"
 	"go.opentelemetry.io/otel/metric"
 	metricnoop "go.opentelemetry.io/otel/metric/noop"
 	"go.opentelemetry.io/otel/sdk/trace"

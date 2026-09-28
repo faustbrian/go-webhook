@@ -10,7 +10,7 @@ import (
 	"time"
 
 	baselog "github.com/faustbrian/go-log"
-	webhook "github.com/faustbrian/go-webhook"
+	webhook "github.com/faustbrian/go-webhook/v2"
 )
 
 func TestObserverWritesOnlyFixedSecretSafeAttributesThroughGoLog(t *testing.T) {

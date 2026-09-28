@@ -9,7 +9,7 @@ Go modules. Their complete license texts remain in their source distributions.
 | `github.com/faustbrian/go-log` | MIT |
 | `github.com/faustbrian/go-transactional-outbox` | MIT |
 | `github.com/faustbrian/go-queue` | MIT |
-| `github.com/faustbrian/go-telemetry` | MIT |
+| `github.com/faustbrian/go-telemetry/v2` | MIT |
 | `go.opentelemetry.io/otel` and SDK/API submodules | Apache-2.0 |
 | `go.uber.org/goleak` (tests) | MIT |
 
