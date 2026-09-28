@@ -8,7 +8,7 @@ import (
 
 	"github.com/faustbrian/go-queue/core"
 	"github.com/faustbrian/go-queue/job"
-	webhook "github.com/faustbrian/go-webhook"
+	webhook "github.com/faustbrian/go-webhook/v2"
 )
 
 var ErrInvalidConfig = errors.New("webhook/queue: invalid configuration")

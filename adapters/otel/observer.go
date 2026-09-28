@@ -7,14 +7,14 @@ import (
 	"errors"
 	"strconv"
 
-	telemetry "github.com/faustbrian/go-telemetry"
-	webhook "github.com/faustbrian/go-webhook"
+	telemetry "github.com/faustbrian/go-telemetry/v2"
+	webhook "github.com/faustbrian/go-webhook/v2"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
 )
 
-const scopeName = "github.com/faustbrian/go-webhook/adapters/otel"
+const scopeName = "github.com/faustbrian/go-webhook/v2/adapters/otel"
 
 var ErrInvalidConfig = errors.New("webhook/otel: telemetry runtime is required")
 

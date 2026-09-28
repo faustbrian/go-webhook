@@ -8,7 +8,7 @@ import (
 	"fmt"
 
 	"github.com/faustbrian/go-transactional-outbox"
-	webhook "github.com/faustbrian/go-webhook"
+	webhook "github.com/faustbrian/go-webhook/v2"
 )
 
 var ErrInvalidConfig = errors.New("webhook/outbox: invalid configuration")

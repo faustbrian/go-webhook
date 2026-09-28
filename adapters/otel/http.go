@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	telemetry "github.com/faustbrian/go-telemetry"
-	telemetryhttp "github.com/faustbrian/go-telemetry/instrumentation/httpclient"
+	telemetry "github.com/faustbrian/go-telemetry/v2"
+	telemetryhttp "github.com/faustbrian/go-telemetry/v2/instrumentation/httpclient"
 )
 
 // ErrInvalidHTTPClient means telemetry could not be composed without

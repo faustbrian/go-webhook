@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/faustbrian/go-transactional-outbox"
-	webhook "github.com/faustbrian/go-webhook"
+	webhook "github.com/faustbrian/go-webhook/v2"
 )
 
 func TestBuildMapsDeliveryToOutboxEnvelope(t *testing.T) {

@@ -13,6 +13,10 @@ protocol behavior, persistence schemas, environment variables, command output,
 resource ownership, ordering, retry/idempotency semantics, and documented
 defaults. A compile-compatible change can still be behaviorally breaking.
 
+Version 2 changes the module path to `github.com/faustbrian/go-webhook/v2`
+because the optional telemetry adapter accepts the v2 telemetry runtime.
+See [migration guidance](docs/migration.md) for the import and runtime changes.
+
 Specification-backed modules MUST NOT diverge from their declared standards.
 Ambiguities require documented decisions and stable tests. The
 [specification decision register](docs/specification-decisions.md) is part of
