@@ -5,6 +5,8 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-09-28
+
 ### Security
 
 - Upgrade `go-idempotency` to v1.2.0 for bounded replay-envelope decoding and
@@ -212,6 +214,7 @@ and Semantic Versioning.
 
 The first release froze the `v1` canonicalization and wire contracts.
 
-[Unreleased]: https://github.com/faustbrian/go-webhook/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/faustbrian/go-webhook/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/faustbrian/go-webhook/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/faustbrian/go-webhook/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/faustbrian/go-webhook/releases/tag/v1.0.0

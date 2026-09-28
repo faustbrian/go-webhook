@@ -14,10 +14,15 @@ SHA-256 and SHA-512 schemes had independent vectors, and the provider matrix
 intentionally claimed no provider preset without authoritative conformance
 evidence.
 
-The v2 release decision requires a green exact-main repository gate and
-release rehearsal, a signed `v2.0.0` tag at that main commit, a public GitHub
-release, and a clean public-proxy consumer using the `/v2` import path.
-Source delivery or a local compatibility check alone is not a release verdict.
+`v2.0.0` was published on 2026-09-28 with a signed tag at main commit
+`9949ac4e8709672520312155b86c726b6f30e2b6` and a
+[GitHub release](https://github.com/faustbrian/go-webhook/releases/tag/v2.0.0).
+Its `/v2` module and import paths require Go 1.27.0.
+
+For `v2.0.1`, require a green exact-main repository gate and release rehearsal,
+a signed tag at that main commit, a public GitHub release, and a clean
+public-proxy consumer using the `/v2` import path. Source delivery or a local
+compatibility check alone is not a release verdict.
 
 ## Release verification commands
 
