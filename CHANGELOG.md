@@ -5,6 +5,11 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+### Security
+
+- Upgrade `go-idempotency` to v1.2.0 for bounded replay-envelope decoding and
+  hardened persistence adapters while retaining the webhook replay contract.
+
 ## [2.0.0] - 2026-09-28
 
 ### Changed
