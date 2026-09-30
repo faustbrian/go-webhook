@@ -15,9 +15,9 @@ and module verification.
 ## Publication
 
 Run the release rehearsal against the exact main commit, then create a signed
-annotated major-version tag at that commit. Publish a GitHub release and verify
-the public Go proxy and a clean consumer with no local replacements. The CI
-rehearsal is not publication and does not replace those checks.
+annotated semantic-version tag at that commit. Publish a GitHub release and
+verify the public Go proxy and a clean consumer with no local replacements.
+The CI rehearsal is not publication and does not replace those checks.
 
 Provider claims must match the maintained provider matrix. A release is blocked
 by failed required gates, a dirty source tree, unresolved high-severity
