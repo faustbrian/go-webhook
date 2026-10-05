@@ -5,6 +5,11 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Renew the external-authority review and record the Trace Context Level 1
+  publication-history change without changing the selected webhook contract.
+
 ## [2.0.1] - 2026-09-28
 
 ### Security
