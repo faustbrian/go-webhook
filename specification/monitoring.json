@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-09-03",
+  "reviewed_at": "2026-10-05",
   "review_interval_days": 30,
   "authorities": [
     {
@@ -288,7 +288,7 @@
       "kind": "releases",
       "version": "",
       "url": "https://www.w3.org/standards/history/trace-context/",
-      "sha256": "210f1d71d5a667a18beea7c681e484088023ed8d839106f757b411c644cdfeaf",
+      "sha256": "70e2dad402936139fafff07cc28c6739e3d3bb8be4ca0550107cf21216533832",
       "specifications": [
         "W3C Trace Context Level 1"
       ]
