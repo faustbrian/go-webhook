@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	baselog "github.com/faustbrian/go-log"
+	baselog "github.com/faustbrian/go-log/v2"
 	webhook "github.com/faustbrian/go-webhook/v2"
 )
 
@@ -17,7 +17,7 @@ func TestObserverWritesOnlyFixedSecretSafeAttributesThroughGoLog(t *testing.T) {
 	t.Parallel()
 
 	var output bytes.Buffer
-	logger := baselog.JSON(&output, &slog.HandlerOptions{Level: slog.LevelDebug})
+	logger := baselog.TrustedJSON(&output, &slog.HandlerOptions{Level: slog.LevelDebug})
 	observer, err := New(logger, slog.LevelInfo)
 	if err != nil {
 		t.Fatalf("New() error = %v", err)

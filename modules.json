@@ -105,7 +105,7 @@
       "tag_prefix": "v",
       "owned_dependencies": [
         "github.com/faustbrian/go-idempotency",
-        "github.com/faustbrian/go-log",
+        "github.com/faustbrian/go-log/v2",
         "github.com/faustbrian/go-transactional-outbox",
         "github.com/faustbrian/go-queue",
         "github.com/faustbrian/go-telemetry/v2"
