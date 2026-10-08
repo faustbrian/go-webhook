@@ -1,15 +1,18 @@
 # Migration and SemVer
 
-## Version 3 module migration (pending publication)
+<a id="version-3-module-migration-pending-publication"></a>
 
-Main uses `github.com/faustbrian/go-webhook/v3`. Insert `/v3` before each
+## Version 3 module migration
+
+The published v3 line uses `github.com/faustbrian/go-webhook/v3`. Insert `/v3` before each
 webhook package suffix and use `github.com/faustbrian/go-transactional-outbox/v2`
 for builders, envelopes and relay contracts passed to `adapters/outbox`.
 The adapter keeps delivery encoding, ownership, cancellation and one HTTP
 attempt per publish; the relay remains responsible for retries and dead letters.
 The telemetry instrumentation scope changes to the `/v3` package identity.
 No signing, verification or delivery-policy change is intended by this migration.
-Use the published v2 line until v3.0.0 is qualified and released.
+Version 3.0.0 was published on 2026-10-08. For later v3 dependency
+updates, also review the [integration caveats](integrations.md).
 
 The Idempotency ecosystem compatibility harness and Service external-reference
 harness still consume historical webhook v1. They are future migration targets,
