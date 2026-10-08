@@ -30,6 +30,10 @@ go get github.com/faustbrian/go-webhook/v2
 
 Go 1.27.0 or newer is required.
 
+The published line is v2. Main prepares `/v3` for the public Outbox v2 adapter
+contract; that release is not yet published. See the
+[migration guide](docs/migration.md#version-3-module-migration-pending-publication).
+
 ## Receive
 
 ```go

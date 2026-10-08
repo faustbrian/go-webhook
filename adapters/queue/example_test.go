@@ -7,8 +7,8 @@ import (
 
 	"github.com/faustbrian/go-queue/core"
 	"github.com/faustbrian/go-queue/job"
-	webhook "github.com/faustbrian/go-webhook/v2"
-	"github.com/faustbrian/go-webhook/v2/adapters/queue"
+	webhook "github.com/faustbrian/go-webhook/v3"
+	"github.com/faustbrian/go-webhook/v3/adapters/queue"
 )
 
 func ExampleAdapter_Enqueue() {

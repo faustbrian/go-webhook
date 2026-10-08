@@ -7,6 +7,13 @@ and Semantic Versioning.
 
 ### Changed
 
+- Prepare the root `/v3` module to accept and return public
+  `go-transactional-outbox/v2` builders and envelopes in `adapters/outbox`.
+  Migrate all webhook imports from `/v2` to `/v3` and Outbox imports to `/v2`;
+  keep existing delivery bounds, one-attempt publishing and relay-owned retry
+  behavior. The telemetry instrumentation scope follows the `/v3` identity.
+  Publication is pending; no version-specific source directory is introduced.
+
 - Renew the external-authority review and record the Trace Context Level 1
   publication-history change without changing the selected webhook contract.
 

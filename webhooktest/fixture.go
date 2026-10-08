@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	webhook "github.com/faustbrian/go-webhook/v2"
+	webhook "github.com/faustbrian/go-webhook/v3"
 )
 
 var ErrInvalidConfig = errors.New("webhooktest: invalid fixture configuration")

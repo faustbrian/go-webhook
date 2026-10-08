@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-transactional-outbox"
-	webhook "github.com/faustbrian/go-webhook/v2"
+	"github.com/faustbrian/go-transactional-outbox/v2"
+	webhook "github.com/faustbrian/go-webhook/v3"
 )
 
 func TestBuildMapsDeliveryToOutboxEnvelope(t *testing.T) {

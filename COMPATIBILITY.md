@@ -17,6 +17,10 @@ Version 2 changes the module path to `github.com/faustbrian/go-webhook/v2`
 because the optional telemetry adapter accepts the v2 telemetry runtime.
 See [migration guidance](docs/migration.md) for the import and runtime changes.
 
+Main prepares `github.com/faustbrian/go-webhook/v3` because the public Outbox
+adapter now uses the separate Outbox v2 builder and envelope types. This is
+not a compatible v2 patch; the v3 release remains pending.
+
 Specification-backed modules MUST NOT diverge from their declared standards.
 Ambiguities require documented decisions and stable tests. The
 [specification decision register](docs/specification-decisions.md) is part of
