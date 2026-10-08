@@ -17,6 +17,17 @@ builds an outbox envelope and its publisher likewise performs one attempt.
 Durable settlement, visibility, retries, and dead lettering remain owned by
 those systems.
 
+The selected `go-queue` v1.1.3 preserves this adapter’s consumed `core` and
+`job` contracts. Applications that also imported
+`github.com/faustbrian/go-queue/rabbitmq` from the older root module must add
+the separately published module at v1.0.2. This is not a drop-in runtime
+migration: `WithNativeConfig`, stable message identity, and explicit native
+connection and producer/consumer policies are required. Automatic
+acknowledgement, fanout, and headers exchanges are rejected; topology remains
+application-owned. The producer opens during construction and the consumer
+opens lazily. See the published [RabbitMQ migration notes](https://github.com/faustbrian/go-queue/blob/376b2ea5c2bd25ace6af4374e464852203df1f8c/rabbitmq/CHANGELOG.md#L38-L59)
+and [configuration guidance](https://github.com/faustbrian/go-queue/blob/376b2ea5c2bd25ace6af4374e464852203df1f8c/rabbitmq/README.md#L79-L86).
+
 ## Telemetry and logs
 
 `Observer` emits only fixed operation, outcome, reason, algorithm,

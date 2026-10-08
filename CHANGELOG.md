@@ -7,6 +7,11 @@ and Semantic Versioning.
 
 ### Changed
 
+- Upgrade `go-queue` to v1.1.3 while preserving the queue adapter’s payload
+  and retry contract. Applications also using the former root RabbitMQ
+  package must select its separate module and migrate its configuration;
+  see the [conditional migration](docs/integrations.md#queue-and-outbox).
+
 - Following the API-only adoption recorded below, upgrade the OpenTelemetry
   SDK and metric SDK to v1.47.0 while retaining exporters at v1.45.0. The
   webhook API and caller-owned runtime composition remain unchanged. This
