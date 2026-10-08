@@ -7,6 +7,12 @@ and Semantic Versioning.
 
 ### Changed
 
+- Following the API-only adoption recorded below, upgrade the OpenTelemetry
+  SDK and metric SDK to v1.47.0 while retaining exporters at v1.45.0. The
+  webhook API and caller-owned runtime composition remain unchanged. This
+  SDK update removes an experimental export batch-size environment setting;
+  see the [telemetry adoption caveat](docs/integrations.md#telemetry-and-logs).
+
 - Upgrade the OpenTelemetry core, metric, and trace APIs to v1.47.0 while
   retaining SDK and exporter v1.45.0. Preserve caller-owned telemetry runtimes,
   bounded observation metrics, trace propagation, and explicit HTTP client

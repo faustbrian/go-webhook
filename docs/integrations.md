@@ -41,6 +41,14 @@ required for it; enable registration only if other application code relies on
 OpenTelemetry globals. Plaintext Collector transport now requires an explicit
 opt-in and should be used only within a protected trust zone.
 
+The selected OpenTelemetry SDK v1.47.0 [removes the experimental export
+batch-size setting](https://github.com/open-telemetry/opentelemetry-go/blob/66cfc9520e205b7d450183532772401bc2b6674c/CHANGELOG.md#L70)
+`OTEL_GO_X_METRIC_EXPORT_BATCH_SIZE`. Applications relying on that variable
+lose their configured export batch-size limit. The released `telemetry/v2`
+v2.0.0 runtime does not expose the reader option that replaces it, and this
+webhook adapter cannot configure that limit. Exporter modules remain at
+v1.45.0; this SDK update does not include later exporter fixes.
+
 ## Deterministic consumer tests
 
 The `webhooktest` package creates a signer/verifier pair with a manual clock,
