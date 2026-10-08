@@ -7,6 +7,11 @@ and Semantic Versioning.
 
 ### Changed
 
+- Upgrade the OpenTelemetry core, metric, and trace APIs to v1.47.0 while
+  retaining SDK and exporter v1.45.0. Preserve caller-owned telemetry runtimes,
+  bounded observation metrics, trace propagation, and explicit HTTP client
+  policy without changing the webhook public API.
+
 - Prepare the root `/v3` module to accept and return public
   `go-transactional-outbox/v2` builders and envelopes in `adapters/outbox`.
   Migrate all webhook imports from `/v2` to `/v3` and Outbox imports to `/v2`;

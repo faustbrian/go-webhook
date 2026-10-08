@@ -3,47 +3,52 @@ package webhookotel
 import (
 	"context"
 	"errors"
+	"reflect"
 	"testing"
 	"time"
 
-	telemetry "github.com/faustbrian/go-telemetry/v2"
 	webhook "github.com/faustbrian/go-webhook/v3"
 	"go.opentelemetry.io/otel/metric"
 	metricnoop "go.opentelemetry.io/otel/metric/noop"
-	"go.opentelemetry.io/otel/sdk/trace"
-	tracetest "go.opentelemetry.io/otel/sdk/trace/tracetest"
 )
 
 func TestObserverRecordsBoundedMetricsAndCurrentSpanEvent(t *testing.T) {
-	spanRecorder := tracetest.NewSpanRecorder()
-	tracerProvider := trace.NewTracerProvider(trace.WithSpanProcessor(spanRecorder))
-	config := telemetry.DefaultConfig("webhook-test", "v1")
-	config.Traces.Enabled = false
-	config.Metrics.Enabled = false
-	runtime, err := telemetry.Init(context.Background(), config)
-	if err != nil {
-		t.Skipf("telemetry global runtime unavailable: %v", err)
-	}
-	t.Cleanup(func() {
-		if err := runtime.Shutdown(context.Background()); err != nil {
-			t.Errorf("runtime.Shutdown() error = %v", err)
-		}
-	})
-	// Runtime ownership is verified by telemetry itself. Replace its global
-	// providers only for this adapter contract test through a recording span.
+	runtime, metrics, spans := exportingRuntime(t)
 	observer, err := New(runtime)
 	if err != nil {
-		t.Fatalf("New() error = %v", err)
+		t.Fatal(err)
 	}
-	ctx, span := tracerProvider.Tracer("test").Start(context.Background(), "parent")
-	observer.Observe(ctx, webhook.Observation{
-		Operation: webhook.OperationDeliveryAttempt, Outcome: webhook.OutcomeRetry,
-		Reason: webhook.ReasonStatus, Duration: time.Second, Algorithm: webhook.SHA256,
-		StatusCode: 503, Classification: webhook.FailureRetryable,
-	})
+	ctx, span := runtime.Tracer("webhook-contract").Start(context.Background(), "parent")
+	event := webhook.Observation{Operation: webhook.OperationDeliveryAttempt, Outcome: webhook.OutcomeRetry, Reason: webhook.ReasonStatus, Duration: 250 * time.Millisecond, Algorithm: webhook.SHA256, StatusCode: 503, Classification: webhook.FailureRetryable}
+	observer.Observe(ctx, event)
 	span.End()
-	if len(spanRecorder.Ended()) != 1 || len(spanRecorder.Ended()[0].Events()) != 1 {
-		t.Fatalf("recorded spans = %#v", spanRecorder.Ended())
+	event.Duration = 750 * time.Millisecond
+	observer.Observe(context.Background(), event)
+	flushContext, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := runtime.ForceFlush(flushContext); err != nil {
+		t.Fatal(err)
+	}
+	expected := map[string]string{"webhook.operation": "delivery_attempt", "webhook.outcome": "retry", "webhook.reason": "status", "webhook.algorithm": "sha256", "webhook.classification": "retryable", "http.response.status_class": "5xx"}
+	snapshot := metrics.snapshot()
+	if len(snapshot) != 2 {
+		t.Fatalf("metric instruments = %+v", snapshot)
+	}
+	count := snapshot["webhook.operation.count"]
+	if count.kind != "counter" || count.unit != "{operation}" || count.points != 1 || count.total != 2 || !reflect.DeepEqual(count.attributes, expected) {
+		t.Fatalf("counter = %+v", count)
+	}
+	duration := snapshot["webhook.operation.duration"]
+	if duration.kind != "histogram" || duration.unit != "s" || duration.points != 1 || duration.count != 2 || duration.total != 1 || !reflect.DeepEqual(duration.attributes, expected) {
+		t.Fatalf("duration = %+v", duration)
+	}
+	ended := spans.GetSpans()
+	if len(ended) != 1 || ended[0].Name != "parent" || len(ended[0].Events) != 1 {
+		t.Fatalf("spans = %+v", ended)
+	}
+	eventRecord := ended[0].Events[0]
+	if eventRecord.Name != "webhook.delivery_attempt" || !reflect.DeepEqual(attributeStrings(eventRecord.Attributes), expected) {
+		t.Fatalf("span event = %+v", eventRecord)
 	}
 }
 
