@@ -5,6 +5,8 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-10-09
+
 ### Changed
 
 - Upgrade `go-queue` to v1.1.3 while preserving the queue adapter’s payload
@@ -22,6 +24,13 @@ and Semantic Versioning.
   retaining SDK and exporter v1.45.0. Preserve caller-owned telemetry runtimes,
   bounded observation metrics, trace propagation, and explicit HTTP client
   policy without changing the webhook public API.
+
+## [3.0.0] - 2026-10-08
+
+Version 3 was published on 2026-10-08. The preparation entries below
+are retained as originally recorded, including their then-pending status.
+
+### Changed
 
 - Prepare the root `/v3` module to accept and return public
   `go-transactional-outbox/v2` builders and envelopes in `adapters/outbox`.

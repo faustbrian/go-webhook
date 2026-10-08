@@ -19,10 +19,17 @@ evidence.
 [GitHub release](https://github.com/faustbrian/go-webhook/releases/tag/v2.0.0).
 Its `/v2` module and import paths require Go 1.27.0.
 
-For `v2.0.1`, require a green exact-main repository gate and release rehearsal,
-a signed tag at that main commit, a public GitHub release, and a clean
-public-proxy consumer using the `/v2` import path. Source delivery or a local
-compatibility check alone is not a release verdict.
+Version `v3.0.0` was published on 2026-10-08 from commit
+`30ecbd4b16cf90b24c6d729f8aaa731d3c3d465f`; its
+[GitHub release](https://github.com/faustbrian/go-webhook/releases/tag/v3.0.0)
+records the `/v3` module and Outbox v2 migration.
+
+For `v3.0.1`, require a green exact-main repository gate and release rehearsal,
+a signed tag at that main commit, seven source assets with signed
+checksums, a public GitHub release, and a clean public-proxy consumer using
+the `/v3` import path. Exercise the selected queue and telemetry composition
+seams and retain their [adoption caveats](integrations.md). Source delivery
+or a local compatibility check alone is not a release verdict.
 
 ## Release verification commands
 
