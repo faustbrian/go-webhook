@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"math"
-	"math/bits"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -63,21 +62,33 @@ type RetryPolicy struct {
 }
 
 // Delay returns a Retry-After delay when valid, otherwise exponential backoff.
+// Negative or inverted delay bounds return zero. Attempts at or below one use
+// the base delay; exponential work stops once the configured cap is reached.
 func (p RetryPolicy) Delay(attempt int, now time.Time, retryAfter string) time.Duration {
+	if p.BaseDelay < 0 || p.MaxDelay < p.BaseDelay {
+		return 0
+	}
 	delay := time.Duration(0)
 	if seconds, err := strconv.ParseInt(retryAfter, 10, 64); err == nil && seconds >= 0 {
-		high, nanoseconds := bits.Mul64(uint64(seconds), uint64(time.Second))
-		if high > 0 {
-			nanoseconds = math.MaxUint64
+		// Bound seconds before multiplication so even MaxInt64 Retry-After
+		// values cannot overflow the signed duration domain.
+		if seconds > int64(p.MaxDelay/time.Second) {
+			delay = p.MaxDelay
+		} else {
+			delay = time.Duration(seconds) * time.Second
 		}
-		delay = time.Duration(min(nanoseconds, uint64(p.MaxDelay)))
 	} else if parsed, err := http.ParseTime(retryAfter); err == nil && parsed.After(now) {
 		delay = parsed.Sub(now)
 	} else {
 		delay = p.BaseDelay
-		for range max(attempt-1, 0) {
-			doubled, _ := bits.Add64(uint64(delay), uint64(delay), 0)
-			delay = time.Duration(min(doubled, uint64(p.MaxDelay)))
+		if attempt > 1 {
+			for remaining := attempt - 1; remaining > 0 && delay > 0 && delay < p.MaxDelay; remaining-- {
+				if delay > p.MaxDelay-delay {
+					delay = p.MaxDelay
+				} else {
+					delay += delay
+				}
+			}
 		}
 	}
 
