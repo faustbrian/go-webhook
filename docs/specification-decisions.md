@@ -905,7 +905,7 @@ docs/specification-decisions.md
 
 ## WEBHOOK-DEC-013: Envelope is CloudEvents-shaped but not CloudEvents
 
-**Authoritative reference:** [CloudEvents 1.0.2](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md).
+**Authoritative reference:** [CloudEvents 1.0.2](https://github.com/cloudevents/spec/tree/v1.0.2/cloudevents/spec.md).
 
 - **Status, owner, and classification:** `resolved`; maintainers; local JSON
   wire policy with an explicit non-conformance boundary.

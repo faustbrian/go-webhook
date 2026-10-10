@@ -25,8 +25,8 @@ migration: `WithNativeConfig`, stable message identity, and explicit native
 connection and producer/consumer policies are required. Automatic
 acknowledgement, fanout, and headers exchanges are rejected; topology remains
 application-owned. The producer opens during construction and the consumer
-opens lazily. See the published [RabbitMQ migration notes](https://github.com/faustbrian/go-queue/blob/376b2ea5c2bd25ace6af4374e464852203df1f8c/rabbitmq/CHANGELOG.md#L38-L59)
-and [configuration guidance](https://github.com/faustbrian/go-queue/blob/376b2ea5c2bd25ace6af4374e464852203df1f8c/rabbitmq/README.md#L79-L86).
+opens lazily. See the published [RabbitMQ migration notes](https://github.com/faustbrian/go-queue/tree/376b2ea5c2bd25ace6af4374e464852203df1f8c/rabbitmq/CHANGELOG.md#L38-L59)
+and [configuration guidance](https://github.com/faustbrian/go-queue/tree/376b2ea5c2bd25ace6af4374e464852203df1f8c/rabbitmq/README.md#L79-L86).
 
 ## Telemetry and logs
 
@@ -53,7 +53,7 @@ OpenTelemetry globals. Plaintext Collector transport now requires an explicit
 opt-in and should be used only within a protected trust zone.
 
 The selected OpenTelemetry SDK v1.47.0 [removes the experimental export
-batch-size setting](https://github.com/open-telemetry/opentelemetry-go/blob/66cfc9520e205b7d450183532772401bc2b6674c/CHANGELOG.md#L70)
+batch-size setting](https://github.com/open-telemetry/opentelemetry-go/tree/66cfc9520e205b7d450183532772401bc2b6674c/CHANGELOG.md#L70)
 `OTEL_GO_X_METRIC_EXPORT_BATCH_SIZE`. Applications relying on that variable
 lose their configured export batch-size limit. The released `telemetry/v2`
 v2.0.0 runtime does not expose the reader option that replaces it, and this
