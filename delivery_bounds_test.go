@@ -1,7 +1,10 @@
 package webhook
 
 import (
+	"context"
 	"math"
+	"os"
+	"os/exec"
 	"testing"
 	"time"
 )
@@ -21,6 +24,28 @@ func TestRetryPolicyDelayRejectsInvalidBounds(t *testing.T) {
 }
 
 func TestRetryPolicyDelayHandlesExtremeAttempts(t *testing.T) {
+	const probeEnvironment = "GOLIB_WEBHOOK_DELAY_PROBE"
+	if os.Getenv(probeEnvironment) != "1" {
+		executable, err := os.Executable()
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Isolate nonterminating mutations so they fail this oracle instead of
+		// exhausting the whole mutation campaign's test deadline.
+		ctx, cancel := context.WithTimeout(t.Context(), 3*time.Second)
+		defer cancel()
+		// #nosec G204 -- Own test executable, fixed test selector and explicit bounded child lifetime.
+		command := exec.CommandContext(ctx, executable, "-test.run=^TestRetryPolicyDelayHandlesExtremeAttempts$", "-test.count=1")
+		command.Env = append(os.Environ(), probeEnvironment+"=1")
+		output, err := command.CombinedOutput()
+		if ctx.Err() != nil {
+			t.Fatalf("Delay extreme-attempt probe exceeded its deadline: %v", ctx.Err())
+		}
+		if err != nil {
+			t.Fatalf("Delay extreme-attempt probe failed: %v\n%s", err, output)
+		}
+		return
+	}
 	policy := RetryPolicy{BaseDelay: time.Second, MaxDelay: 5 * time.Second}
 	for _, test := range []struct {
 		attempt int
