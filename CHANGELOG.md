@@ -5,16 +5,27 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+## [3.0.2] - 2026-10-10
+
 ### Security
 
 - Bound public retry-delay arithmetic before multiplication and doubling.
   Invalid negative or inverted delay policies return zero; extreme attempt
   numbers cannot overflow into an unbounded loop. Valid retry and Retry-After
   results retain their configured caps.
+  ([a57fe4e4e9](https://github.com/faustbrian/go-webhook/commit/a57fe4e4e9096b5c02b9e203f3f481bf5d02806b))
 
 - Upgrade x/net to v0.60.0 for published HTTP/2 security fixes, retaining
   the webhook API, signature format, delivery policy and Go 1.27 minimum.
   Rebuild applications with Go 1.27.2 or later for standard-library fixes.
+  ([fbeb6d50a5](https://github.com/faustbrian/go-webhook/commit/fbeb6d50a5d5277fa0092813bf91b8f6a54ebccf))
+
+### Changed
+
+- Align documentation parsing and exact public-record scanner policies with
+  the patched verification toolchain without changing the Go 1.27 minimum.
+  ([11fedeeb36](https://github.com/faustbrian/go-webhook/commit/11fedeeb367ed83e51a3c5c519cb468b223b2fd4),
+  [93bc1a2da5](https://github.com/faustbrian/go-webhook/commit/93bc1a2da5a366f13fe283adb7fbe9b42e04ac0c))
 
 ## [3.0.1] - 2026-10-09
 
