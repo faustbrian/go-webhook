@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "packages": [
+    {
+      "module_directory": ".",
+      "package_directory": ".",
+      "source_digest": "f843ae8689ebcc5e5405266bb94bceb6341a0c430bce339691c69d30c9515f4d",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "390cf4085a0063fe5dcaa29ce942ea4cb8c7876347da90376b65dc8c5c811104",
+      "mutations": [
+        {
+          "file_name": "delivery.go",
+          "type": "CONDITIONALS_BOUNDARY",
+          "line": 84,
+          "column": 14,
+          "contract_domain": "Public RetryPolicy.Delay fallback arithmetic after invalid-bound and Retry-After admission, for every representable attempt and duration.",
+          "reason": "Changing attempt > 1 to attempt >= 1 adds only attempt 1, where remaining is zero. The loop executes no iterations and the final min returns the identical base delay; no allocation, callback, error or observable effect differs. Independently reviewed 2026-10-10 by /root/tools_repositoryfile_final_review at bbb2e332a8790763edc3b454063608eca1e92212; owner webhook maintainers. Expires on changed source, guards, caller contract or verifier/operator semantics. Native LIVED status remains visible."
+        },
+        {
+          "file_name": "delivery.go",
+          "type": "CONDITIONALS_BOUNDARY",
+          "line": 86,
+          "column": 14,
+          "contract_domain": "Public RetryPolicy.Delay doubling after nonnegative bounds admission, guarded by positive delay below the configured cap.",
+          "reason": "Changing delay > MaxDelay-delay to delay >= MaxDelay-delay adds only equality. The guarded nonnegative subtraction is representable; at equality doubling delay equals MaxDelay exactly and cannot overflow. Assigning the cap and doubling therefore produce the same value and remaining loop behavior, with no allocation, callback, error or observable difference. Independently reviewed 2026-10-10 by /root/tools_repositoryfile_final_review at bbb2e332a8790763edc3b454063608eca1e92212; owner webhook maintainers. Expires on changed source, guards, caller contract or verifier/operator semantics. Native LIVED status remains visible."
+        }
+      ]
+    }
+  ]
+}

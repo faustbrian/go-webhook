@@ -23,6 +23,42 @@ func TestRetryPolicyDelayRejectsInvalidBounds(t *testing.T) {
 	}
 }
 
+func TestRetryPolicyDelayPreservesFiniteBoundaries(t *testing.T) {
+	for _, test := range []struct {
+		name       string
+		policy     RetryPolicy
+		attempt    int
+		retryAfter string
+		want       time.Duration
+	}{
+		{
+			name:    "equal positive delay bounds",
+			policy:  RetryPolicy{BaseDelay: time.Second, MaxDelay: time.Second},
+			attempt: 1,
+			want:    time.Second,
+		},
+		{
+			name:       "whole seconds below fractional cap",
+			policy:     RetryPolicy{BaseDelay: time.Nanosecond, MaxDelay: 1500 * time.Millisecond},
+			attempt:    1,
+			retryAfter: "1",
+			want:       time.Second,
+		},
+		{
+			name:    "largest duration cap preserves small backoff",
+			policy:  RetryPolicy{BaseDelay: time.Nanosecond, MaxDelay: time.Duration(math.MaxInt64)},
+			attempt: 2,
+			want:    2 * time.Nanosecond,
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			if got := test.policy.Delay(test.attempt, time.Unix(0, 0), test.retryAfter); got != test.want {
+				t.Errorf("Delay() = %v, want %v", got, test.want)
+			}
+		})
+	}
+}
+
 func TestRetryPolicyDelayHandlesExtremeAttempts(t *testing.T) {
 	const probeEnvironment = "GOLIB_WEBHOOK_DELAY_PROBE"
 	if os.Getenv(probeEnvironment) != "1" {
