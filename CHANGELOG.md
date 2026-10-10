@@ -5,6 +5,12 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+### Security
+
+- Upgrade x/net to v0.60.0 for published HTTP/2 security fixes, retaining
+  the webhook API, signature format, delivery policy and Go 1.27 minimum.
+  Rebuild applications with Go 1.27.2 or later for standard-library fixes.
+
 ## [3.0.1] - 2026-10-09
 
 ### Changed
