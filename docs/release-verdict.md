@@ -36,12 +36,12 @@ or a local compatibility check alone is not a release verdict.
 Release evidence is collected from a clean final tree with:
 
 ```sh
-make check FUZZTIME=10s
+make check-full
 go mod verify
 git status --porcelain=v1
 ```
 
-`make check` aggregates format, vet, static analysis, tests, meaningful 100%
+`make check-full` aggregates format, vet, static analysis, tests, meaningful 100%
 production coverage, race, bounded fuzzing, allocation benchmarks, executable
 documentation, `GO-SAFETY-1`, independent interoperability, and vulnerability
 scanning. GitHub Actions runs the repository and module gates.

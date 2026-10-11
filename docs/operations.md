@@ -15,15 +15,17 @@ Common failures:
 - one attempt only: an idempotency key is required for retries;
 - queue/outbox repeats: ensure only the durable layer owns retry scheduling.
 
-Release is blocked by any red `make check`, `make safety`, or
+Release is blocked by any red `make check-full`, `make safety`, or
 `make interoperability` gate, canonical drift, coverage below 100%, race/fuzz
 failure, unresolved high/medium finding, or unsupported provider claim. The
 release rehearsal verifies the intended module version. Publication requires a
 signed tag on the verified main commit, a GitHub release, and public-proxy and
 clean-consumer checks.
 
-Fuzzing defaults to four workers so results do not depend on host CPU count.
-Override `FUZZWORKERS` only when the runner has a deliberate resource budget.
+The standalone `scripts/check-fuzz.sh` defaults to four workers so results do
+not depend on host CPU count. Its second positional argument selects a worker
+count separately from the verifier's bounded policy; change it only with a
+deliberate resource budget.
 
 Current residual risks: HMAC security depends on operator-generated secrets;
 durability depends on the supplied replay/queue/outbox stores; explicit SSRF
