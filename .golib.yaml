@@ -28,10 +28,42 @@ operations:
   - module: .
     gate: fuzz
     steps:
-      - type: make
-        makefile: verification/package.mk
-        target: fuzz
-        timeout: 20m
+      - type: go-test
+        packages: ["."]
+        fuzz: '^FuzzParseSignatureHeaders$'
+        budget: 10s
+        count: 1
+        timeout: 2m
+      - type: go-test
+        packages: ["."]
+        fuzz: '^FuzzCanonicalize$'
+        budget: 10s
+        count: 1
+        timeout: 2m
+      - type: go-test
+        packages: ["."]
+        fuzz: '^FuzzTimestampVerification$'
+        budget: 10s
+        count: 1
+        timeout: 2m
+      - type: go-test
+        packages: ["."]
+        fuzz: '^FuzzDeliveryWire$'
+        budget: 10s
+        count: 1
+        timeout: 2m
+      - type: go-test
+        packages: ["."]
+        fuzz: '^FuzzEnvelope$'
+        budget: 10s
+        count: 1
+        timeout: 2m
+      - type: go-test
+        packages: ["."]
+        fuzz: '^FuzzSSRFPolicy$'
+        budget: 10s
+        count: 1
+        timeout: 2m
   - module: .
     gate: benchmark
     steps:
