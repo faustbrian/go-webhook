@@ -18,7 +18,7 @@ bypass. Resolve a new approved endpoint explicitly instead.
 ## Why did delivery attempt only once?
 
 Retries require an idempotency key. Queue and outbox adapters deliberately use
-one HTTP attempt because the durable layer owns retries.
+at most one HTTP attempt because the durable layer owns retries.
 
 ## Which providers are supported?
 

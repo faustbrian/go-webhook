@@ -1,4 +1,7 @@
 // Package webhookqueue adapts bounded delivery requests to queue messages.
+// New/Enqueue borrow a producer; Handle decodes and caps core attempts at one.
+// The external queue owns durability, retries, settlement and shutdown. No
+// consumer worker, transport or redaction is installed by this adapter.
 package webhookqueue
 
 import (
@@ -11,23 +14,32 @@ import (
 	webhook "github.com/faustbrian/go-webhook/v3"
 )
 
+// ErrInvalidConfig identifies missing queue/deliverer or nonpositive payload bound.
 var ErrInvalidConfig = errors.New("webhook/queue: invalid configuration")
 
 // Queue is the narrow synchronous producer surface implemented by queue.
 type Queue interface {
+	// Queue synchronously accepts/rejects a message and options. It has no ctx:
+	// bound its blocking and support concurrent use if adapters are shared.
+	// Message.Bytes returns a fresh copy; options/pointer fields remain borrowed.
 	Queue(message core.QueuedMessage, options ...job.AllowOption) error
 }
 
 // Config bounds messages and optionally assigns queue-level retry policy.
-// Delivery handling always performs one HTTP attempt, preventing nested retry
+// Delivery handling performs at most one HTTP attempt, preventing nested retry
 // multiplication.
 type Config struct {
-	Queue           Queue
+	// Queue is mandatory and borrowed; typed nil is not detected.
+	Queue Queue
+	// MaxMessageBytes must be positive and caps encoded delivery payload, not queue storage.
 	MaxMessageBytes int
-	JobOptions      []job.AllowOption
+	// JobOptions is slice-copied; pointer fields remain shared. Empty defaults to RetryCount zero.
+	JobOptions []job.AllowOption
 }
 
-// Adapter enqueues versioned delivery requests.
+// Adapter enqueues versioned delivery requests. Construct with New; zero is
+// unusable. Shared use requires a safe queue and immutable borrowed option
+// pointer values. It owns no queue resource lifecycle or global state.
 type Adapter struct {
 	queue      Queue
 	maxBytes   int
@@ -48,7 +60,10 @@ func New(config Config) (*Adapter, error) {
 }
 
 // Enqueue checks cancellation, encodes a bounded request, and synchronously
-// hands it to queue. Acceptance is not an exactly-once guarantee.
+// hands it to queue. Acceptance is not an exactly-once guarantee. ctx must be
+// non-nil; cancellation is checked only before encoding, not propagated into the
+// contextless Queue call. Raw serialized data may be sensitive; queue errors are
+// wrapped verbatim and callback panics propagate.
 func (a *Adapter) Enqueue(ctx context.Context, delivery webhook.DeliveryRequest) error {
 	if err := ctx.Err(); err != nil {
 		return err
@@ -64,8 +79,10 @@ func (a *Adapter) Enqueue(ctx context.Context, delivery webhook.DeliveryRequest)
 	return nil
 }
 
-// Handle strictly decodes one message and performs one HTTP attempt. The
-// surrounding queue owns any retry schedule and settlement behavior.
+// Handle strictly decodes one message and requests at most one HTTP attempt. The
+// surrounding queue owns any retry schedule and settlement behavior. Admission
+// failures may perform zero HTTP sends. No queue acknowledgement/release occurs;
+// application persistence and retry classification remain caller-owned.
 func Handle(
 	ctx context.Context,
 	deliverer *webhook.Deliverer,

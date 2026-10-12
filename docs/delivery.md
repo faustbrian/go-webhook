@@ -18,7 +18,7 @@ leaving the signature valid.
 Terminal and exhausted deliveries invoke the optional dead-letter hook.
 `Replay` invokes the audit hook with the original delivery ID and creates a
 new delivery. It never reuses an attempt ID. Hook failures are returned and
-hook panics cannot corrupt observation paths.
+hook panics propagate; observer invocation alone contains panics.
 
 `FanOut` uses a fixed worker bound and preserves result order. It is an
 orchestration primitive, not a durable queue. Cancellation stops new useful

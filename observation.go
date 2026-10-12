@@ -10,8 +10,11 @@ import (
 type Operation string
 
 const (
-	OperationVerification    Operation = "verification"
-	OperationReplay          Operation = "replay"
+	// OperationVerification identifies bounded HTTP verification, not plain Verify.
+	OperationVerification Operation = "verification"
+	// OperationReplay identifies atomic replay-store admission.
+	OperationReplay Operation = "replay"
+	// OperationDeliveryAttempt identifies recorded outbound attempt evidence.
 	OperationDeliveryAttempt Operation = "delivery_attempt"
 )
 
@@ -19,44 +22,74 @@ const (
 type Outcome string
 
 const (
-	OutcomeSuccess  Outcome = "success"
+	// OutcomeSuccess means the observed operation completed without returned failure.
+	OutcomeSuccess Outcome = "success"
+	// OutcomeRejected means inbound verification or replay admission refused.
 	OutcomeRejected Outcome = "rejected"
-	OutcomeRetry    Outcome = "retry"
-	OutcomeFailure  Outcome = "failure"
+	// OutcomeRetry means another outbound attempt is planned.
+	OutcomeRetry Outcome = "retry"
+	// OutcomeFailure means a recorded outbound attempt failed.
+	OutcomeFailure Outcome = "failure"
 )
 
-// Reason is a stable failure category that cannot contain caller data.
+// Reason names the fixed core failure categories. It is string-backed, so a
+// direct caller can construct arbitrary data; adapters do not normalize it.
 type Reason string
 
 const (
-	ReasonNone      Reason = "none"
+	// ReasonNone means no observed failure category.
+	ReasonNone Reason = "none"
+	// ReasonSignature categorizes malformed or unauthenticated signature data.
 	ReasonSignature Reason = "signature"
+	// ReasonTimestamp categorizes timestamp refusal.
 	ReasonTimestamp Reason = "timestamp"
-	ReasonReplay    Reason = "replay"
-	ReasonStore     Reason = "store"
-	ReasonLimit     Reason = "limit"
-	ReasonCanceled  Reason = "canceled"
+	// ReasonReplay categorizes retained replay identity.
+	ReasonReplay Reason = "replay"
+	// ReasonStore categorizes replay-store unavailability.
+	ReasonStore Reason = "store"
+	// ReasonLimit categorizes body/header/response size rejection.
+	ReasonLimit Reason = "limit"
+	// ReasonCanceled categorizes context cancellation/deadline errors.
+	ReasonCanceled Reason = "canceled"
+	// ReasonTransport categorizes delivery/transport failure without status attribution.
 	ReasonTransport Reason = "transport"
-	ReasonStatus    Reason = "status"
-	ReasonPolicy    Reason = "policy"
-	ReasonInternal  Reason = "internal"
+	// ReasonStatus categorizes non-success endpoint status.
+	ReasonStatus Reason = "status"
+	// ReasonPolicy categorizes endpoint admission refusal.
+	ReasonPolicy Reason = "policy"
+	// ReasonInternal categorizes remaining failures without exposing error text.
+	ReasonInternal Reason = "internal"
 )
 
 // Observation intentionally has no payload, signature, key, event ID,
 // endpoint, header, query, or arbitrary error field.
 type Observation struct {
-	Operation      Operation
-	Outcome        Outcome
-	Reason         Reason
-	Duration       time.Duration
-	Algorithm      Algorithm
-	StatusCode     int
-	Attempt        int
+	// Operation is a fixed core operation; direct callers can construct arbitrary string values.
+	Operation Operation
+	// Outcome is a fixed core result category, not durable-effect evidence.
+	Outcome Outcome
+	// Reason is a fixed core failure category rather than raw error text.
+	Reason Reason
+	// Duration is measured/clamped nonnegative by core; direct callers control it.
+	Duration time.Duration
+	// Algorithm is the configured algorithm for verification/replay, empty on core delivery events.
+	Algorithm Algorithm
+	// StatusCode is attempt HTTP status or zero; adapters reduce it to status class.
+	StatusCode int
+	// Attempt is the one-based delivery attempt, zero for verification/replay.
+	Attempt int
+	// Classification is delivery retry classification, empty for verification/replay.
 	Classification FailureClassification
 }
 
-// Observer receives secret-safe observations.
+// Observer receives fixed-schema core observations synchronously. Borrowed
+// implementations must support concurrent calls, bound retained state and return
+// promptly. Core invocation contains panics but adds no queue/retry or timeout;
+// direct calls do not inherit that protection. Arbitrary caller-created values
+// are not automatically privacy-safe.
 type Observer interface {
+	// Observe receives one copied value; it cannot veto the operation or ensure
+	// external durability. Do not block completion or introduce sensitive data.
 	Observe(ctx context.Context, observation Observation)
 }
 

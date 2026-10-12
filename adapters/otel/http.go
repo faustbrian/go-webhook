@@ -15,7 +15,10 @@ var ErrInvalidHTTPClient = errors.New("webhook/otel: runtime, client, and explic
 // InstrumentHTTPClient clones client and wraps its existing transport with
 // telemetry tracing, metrics, and propagation. Requiring an explicit base
 // transport prevents accidentally replacing a secure SSRF-aware transport
-// with http.DefaultTransport.
+// with http.DefaultTransport. The client is a shallow copy: transport, Jar,
+// callbacks and runtime resources stay borrowed; do not mutate them concurrently.
+// No shutdown, secure-client creation or egress policy is added. Trace propagation
+// occurs after core signing and is intentionally outside the MAC (DEC-023).
 func InstrumentHTTPClient(runtime *telemetry.Runtime, client *http.Client, operation string) (*http.Client, error) {
 	if runtime == nil || client == nil || client.Transport == nil {
 		return nil, ErrInvalidHTTPClient

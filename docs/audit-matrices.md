@@ -37,7 +37,7 @@ contracts are integrity-pinned in
 | concurrent identical replay checks | exactly one atomic acceptance | 64-way `TestVerifyAndRecordAtomicallyRejectsReplay` under `-race` |
 | replay backend unavailable | fail closed | replay and idempotency adapter fault tests |
 | ambiguous outbound receipt | retry only with explicit idempotency key | delivery retry tests |
-| queue/outbox relay | exactly one HTTP attempt per durable claim | adapter tests and `ExampleAdapter_Enqueue` |
+| queue/outbox relay | at most one HTTP attempt per durable claim | adapter tests and `ExampleAdapter_Enqueue` |
 | client timeout/cancellation | bounded exhausted or canceled classification | `TestDeliverClassifiesHTTPClientTimeoutAsExhaustedTransport` and cancellation tests |
 
 ## SSRF

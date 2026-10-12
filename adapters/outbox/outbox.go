@@ -1,5 +1,8 @@
 // Package webhookoutbox adapts webhook deliveries to outbox envelopes and relay
-// publishers.
+// publishers. Build only creates an envelope; callers insert it transactionally.
+// NewPublisher/Publish borrow a Deliverer and cap core attempts at one, while
+// the relay owns claiming, retries, dead-letter policy and settlement. No database,
+// background relay, resource shutdown or credential policy is installed here.
 package webhookoutbox
 
 import (
@@ -11,9 +14,13 @@ import (
 	webhook "github.com/faustbrian/go-webhook/v3"
 )
 
+// ErrInvalidConfig identifies missing required builder/deliverer/topic or payload bound.
 var ErrInvalidConfig = errors.New("webhook/outbox: invalid configuration")
 
 // Build encodes a bounded delivery request into a validated outbox envelope.
+// Payload contains unredacted application data. Builder callbacks/lifetime stay
+// caller-owned; no store insertion or transaction is performed. EventID becomes
+// OrderingKey, IdempotencyKey remains explicit, PayloadVersion is one.
 func Build(
 	builder *outbox.EnvelopeBuilder,
 	topic string,
@@ -42,8 +49,10 @@ func Build(
 	return envelope, nil
 }
 
-// Publisher implements relay.Publisher with exactly one HTTP attempt per
-// claimed envelope. The relay remains the sole retry and dead-letter owner.
+// Publisher implements relay.Publisher with at most one HTTP attempt per
+// claimed envelope. The relay owns retries/settlement; a supplied Deliverer's
+// DeadLetter callback can still run on its terminal path, so coordinate ownership
+// explicitly. Zero Publisher is unusable; shared calls require a safe Deliverer.
 type Publisher struct {
 	deliverer *webhook.Deliverer
 	maxBytes  int
@@ -58,7 +67,9 @@ func NewPublisher(deliverer *webhook.Deliverer, maxMessageBytes int) (*Publisher
 	return &Publisher{deliverer: deliverer, maxBytes: maxMessageBytes}, nil
 }
 
-// Publish decodes one strict envelope payload and performs one HTTP attempt.
+// Publish decodes bounded payload and requests at most one HTTP send. It does
+// not validate envelope metadata/topic/version or settle the claim; relay callers
+// own those checks and durable outcomes. Delivery errors remain wrapped.
 func (p *Publisher) Publish(ctx context.Context, envelope outbox.Envelope) error {
 	delivery, err := webhook.UnmarshalDeliveryRequest(envelope.Payload, p.maxBytes)
 	if err != nil {

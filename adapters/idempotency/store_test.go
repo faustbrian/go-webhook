@@ -116,6 +116,8 @@ func TestNewValidatesAllScopeComponents(t *testing.T) {
 	}
 }
 
+// fakeStore is a sequential Acquire-outcome probe, not a real atomic backend;
+// each parallel case owns its instance and other lifecycle operations refuse.
 type fakeStore struct {
 	request idempotency.AcquireRequest
 	result  idempotency.AcquireResult

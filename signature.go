@@ -1,5 +1,16 @@
 // Package webhook provides protocol-independent webhook signing, verification,
-// replay protection, and delivery primitives.
+// replay protection, and delivery primitives. Start with NewSigner/NewVerifier
+// and their HTTP helpers; NewDeliverer composes caller-owned HTTP and endpoint
+// policy. Local v1 is not RFC 9421, CloudEvents or a vendor preset. Optional
+// adapters import existing queue, outbox, idempotency, logging and telemetry
+// owners; the core owns none of their lifecycles and introduces no cgo.
+//
+// Configuration key material is copied, not erased; message slices/maps and
+// callbacks are borrowed. Bound direct inputs and make shared collaborators
+// concurrency-safe. No clock, callback or external I/O is forcibly preempted.
+// Verification authenticates exact remaining body bytes, not application
+// authorization or exactly-once business effects. Secure egress requires both
+// endpoint policy and a transport enforcing validated dial targets.
 package webhook
 
 import (
@@ -57,72 +68,114 @@ var (
 const maxNonceBytes = 128
 
 // NonceGenerator returns a fresh public nonce for one signing operation.
-// Implementations must be concurrency-safe.
+// Implementations must be concurrency-safe and bound their work. Return fresh
+// nonempty UTF-8 of at most 128 bytes; errors/invalid outputs become
+// ErrNonceGeneration. Signing contains no callback panic or timeout boundary.
 type NonceGenerator func() (string, error)
 
 // ReplayStore atomically checks and records replay keys. Implementations MUST
 // return true only when the key was absent and was recorded with expiresAt in
 // the same atomic operation. false, nil means the key already existed.
 type ReplayStore interface {
+	// CheckAndRecord must atomically record absent identity until expiresAt;
+	// retained identity returns false. Honor ctx and retain no unbounded
+	// application data. Core keys are domain/namespace/event-ID digests. Storage
+	// errors fail closed; admission is not atomic with downstream business effects.
 	CheckAndRecord(ctx context.Context, key string, expiresAt time.Time) (recorded bool, err error)
 }
 
 // Message contains the exact request components covered by a signature. Body
-// is never transformed before hashing.
+// is never transformed before hashing. Slices/maps are borrowed for a call;
+// concurrent mutation is forbidden. Direct APIs impose no overall body/query/
+// metadata/key-ID bound; the caller must cap untrusted inputs before allocating.
 type Message struct {
-	Timestamp      time.Time
-	Nonce          string
-	Method         string
-	Path           string
-	RawQuery       string
-	Host           string
-	ContentType    string
+	// Timestamp is signed at nonnegative Unix-second precision; zero lets Sign sample its clock.
+	Timestamp time.Time
+	// Nonce is signed public UTF-8, 1–128 bytes; empty lets Sign generate one.
+	Nonce string
+	// Method is nonempty case-sensitive method bytes with no CR/LF.
+	Method string
+	// Path is caller-supplied path bytes; HTTP helpers use EscapedPath or /.
+	Path string
+	// RawQuery is parsed with Go form semantics; key order normalizes, duplicate value order stays.
+	RawQuery string
+	// Host is lowercased in the canonical form, including any explicit port.
+	Host string
+	// ContentType is exact signed bytes; HTTP helpers admit one value up to 256 UTF-8 bytes.
+	ContentType string
+	// IdempotencyKey is exact signed identity, not proof of receiver deduplication.
 	IdempotencyKey string
-	Body           []byte
-	Metadata       map[string]string
+	// Body is borrowed exact bytes hashed with SHA-256 even for HMAC-SHA-512.
+	Body []byte
+	// Metadata is borrowed signed string data sorted by key; nil means no entries.
+	Metadata map[string]string
 }
 
 // SigningKey is a versioned outbound secret. Empty validity bounds are open.
 type SigningKey struct {
-	ID        string
-	Secret    []byte
+	// ID is a required unique configured key identity, not secret material.
+	ID string
+	// Secret is required nonempty HMAC material copied by NewSigner; entropy is caller-owned.
+	Secret []byte
+	// NotBefore is the inclusive start at signed time; zero leaves the start open.
 	NotBefore time.Time
-	NotAfter  time.Time
-	Revoked   bool
+	// NotAfter is the inclusive end at signed time; zero leaves the end open.
+	NotAfter time.Time
+	// Revoked excludes the key regardless of its time window.
+	Revoked bool
 }
 
 // VerificationKey is a versioned inbound secret. Empty validity bounds are
 // open.
 type VerificationKey struct {
-	ID        string
-	Secret    []byte
+	// ID is a required unique identity selected from the candidate signature.
+	ID string
+	// Secret is required nonempty HMAC material copied by NewVerifier; entropy is caller-owned.
+	Secret []byte
+	// NotBefore is the inclusive validity start at the candidate signed time; zero is open.
 	NotBefore time.Time
-	NotAfter  time.Time
-	Revoked   bool
+	// NotAfter is the inclusive validity end at the candidate signed time; zero is open.
+	NotAfter time.Time
+	// Revoked rejects this key regardless of its time window.
+	Revoked bool
 }
 
 // Signature is a transport-neutral signature value.
 type Signature struct {
-	Version   string
+	// Version identifies local v1, not an RFC 9421 or vendor format.
+	Version string
+	// Algorithm is the configured HMAC construction; inbound values cannot widen it.
 	Algorithm Algorithm
-	KeyID     string
+	// KeyID attributes the signing key and is included in canonical bytes.
+	KeyID string
+	// Timestamp is normalized signed UTC Unix-second time.
 	Timestamp time.Time
-	Nonce     string
-	Value     string
+	// Nonce is the signed public nonce shared by all keys in one Sign call.
+	Nonce string
+	// Value is an unpadded base64url MAC, not ciphertext or secret key material.
+	Value string
 }
 
 // Verification describes the key and algorithm that authenticated a message.
 type Verification struct {
-	KeyID     string
+	// KeyID identifies the first candidate that authenticated.
+	KeyID string
+	// Algorithm is the configured accepted HMAC construction.
 	Algorithm Algorithm
+	// Timestamp is the accepted signature time, not processing completion time.
 	Timestamp time.Time
-	Nonce     string
+	// Nonce is the accepted signed nonce; Verify alone does not store it.
+	Nonce string
 }
 
 // VerificationError separates a stable caller-facing message from internal
-// diagnostics. Diagnostic must only be sent to a secret-safe internal sink.
+// diagnostics. Kind may wrap body-I/O diagnostics; exported caller-created
+// fields are not sanitized. Use SafeMessage for untrusted HTTP responses; Error
+// renders Kind.Error verbatim, not a redaction guarantee. Methods accept nil.
 type VerificationError struct {
-	Kind       error
+	// Kind is the wrapped category; caller-constructed errors render its Error verbatim.
+	Kind error
+	// Diagnostic is internal text not included by Error or SafeMessage; caller values are not sanitized.
 	Diagnostic string
 }
 
@@ -149,7 +202,13 @@ func (e *VerificationError) SafeMessage() string {
 	return "webhook verification failed"
 }
 
-// Canonicalize constructs the versioned, unambiguous bytes signed by v1.
+// Canonicalize constructs owned local v1 bytes with a fixed label order/final
+// LF, raw base64url variable fields, sorted metadata and a SHA-256 body digest.
+// Query uses Go ParseQuery/Values.Encode, retaining duplicate value order; host
+// lowercases and method case stays exact. This is local policy under
+// WEBHOOK-DEC-001–005 in docs/specification-decisions.md, protected by
+// TestCanonicalizeProducesStableVersionedBytes and independent v1 vectors.
+// It neither validates endpoint safety nor authorizes a request.
 func Canonicalize(message Message, keyID string, algorithm Algorithm) ([]byte, error) {
 	if _, err := hashFactory(algorithm); err != nil {
 		return nil, err
@@ -222,13 +281,20 @@ func canonicalMetadata(metadata map[string]string) string {
 
 // SignerConfig configures outbound signatures.
 type SignerConfig struct {
-	Algorithm      Algorithm
-	Keys           []SigningKey
-	Clock          func() time.Time
+	// Algorithm must explicitly be SHA256 or SHA512; zero has no default.
+	Algorithm Algorithm
+	// Keys must be nonempty with unique nonempty IDs/secrets and non-inverted windows.
+	Keys []SigningKey
+	// Clock is borrowed; nil uses time.Now. Bound callbacks and make them concurrency-safe.
+	Clock func() time.Time
+	// NonceGenerator is borrowed; nil uses 18 crypto/rand bytes encoded as base64url.
 	NonceGenerator NonceGenerator
 }
 
-// Signer creates signatures for every active key, newest first.
+// Signer creates signatures for every active key, newest first. Use NewSigner;
+// nil/zero Signer is unusable. It is immutable and concurrently usable when
+// borrowed Clock/NonceGenerator and input objects support that usage. No worker,
+// key erasure or hot-reload mechanism is owned; reconstruct to change keys.
 type Signer struct {
 	algorithm Algorithm
 	hash      func() hash.Hash
@@ -237,7 +303,9 @@ type Signer struct {
 	nonce     NonceGenerator
 }
 
-// NewSigner validates and copies signer configuration.
+// NewSigner validates key identity/windows and copies slice/secret bytes before
+// publication, returning nil on error. Clock/nonce closures remain borrowed;
+// no entropy-length minimum or upper bound on configured key count is imposed.
 func NewSigner(config SignerConfig) (*Signer, error) {
 	factory, err := hashFactory(config.Algorithm)
 	if err != nil {
@@ -277,7 +345,11 @@ func NewSigner(config SignerConfig) (*Signer, error) {
 	return &Signer{algorithm: config.Algorithm, hash: factory, keys: keys, clock: clock, nonce: nonce}, nil
 }
 
-// Sign creates one signature for each active key.
+// Sign creates one signature for each active key and returns owned values.
+// Zero timestamp samples Clock, then truncates to UTC Unix seconds; one generated
+// nonce is shared across keys without mutating Message. Key validity includes
+// both endpoints at that signed time, not a separate current-time instant.
+// No active key returns ErrNoActiveKey. Borrowed callbacks may block/panic.
 func (s *Signer) Sign(message Message) ([]Signature, error) {
 	now := s.clock().UTC()
 	if message.Timestamp.IsZero() {
@@ -335,17 +407,28 @@ func (s *Signer) Sign(message Message) ([]Signature, error) {
 
 // VerifierConfig configures inbound signature verification.
 type VerifierConfig struct {
-	Algorithm       Algorithm
-	Keys            []VerificationKey
-	Clock           func() time.Time
-	Tolerance       time.Duration
-	ReplayStore     ReplayStore
-	ReplayTTL       time.Duration
+	// Algorithm must explicitly be SHA256 or SHA512; zero has no default.
+	Algorithm Algorithm
+	// Keys must be nonempty and valid; slice and secret bytes are copied.
+	Keys []VerificationKey
+	// Clock is borrowed; nil uses time.Now. Its time controls skew and replay expiry.
+	Clock func() time.Time
+	// Tolerance is inclusive absolute clock skew; zero requires the sampled instant, negative rejects.
+	Tolerance time.Duration
+	// ReplayStore is optional and borrowed; nil disables replay checks, typed nil is caller-invalid.
+	ReplayStore ReplayStore
+	// ReplayTTL must be positive with a store and zero without one; no maximum is imposed.
+	ReplayTTL time.Duration
+	// ReplayNamespace must be nonempty with a store and empty without one; caller defines collision scope.
 	ReplayNamespace string
-	Observer        Observer
+	// Observer is optional and borrowed; callbacks are synchronous and core invocation contains panics.
+	Observer Observer
 }
 
-// Verifier authenticates signatures with bounded clock skew.
+// Verifier authenticates signatures with configured clock skew. Use NewVerifier;
+// nil/zero Verifier is unusable. Immutable copied keys support concurrent use
+// when borrowed clock/store/observer and input data do. It owns no worker/store
+// lifecycle and cannot couple replay admission to application transaction commit.
 type Verifier struct {
 	algorithm Algorithm
 	hash      func() hash.Hash
@@ -358,7 +441,9 @@ type Verifier struct {
 	observer  Observer
 }
 
-// NewVerifier validates and copies verifier configuration.
+// NewVerifier validates key/algorithm/skew/replay configuration, copies key
+// material and returns nil on failure. Other collaborators are retained;
+// typed-nil interfaces are not detected and clock panics are not contained.
 func NewVerifier(config VerifierConfig) (*Verifier, error) {
 	factory, err := hashFactory(config.Algorithm)
 	if err != nil {
@@ -421,7 +506,12 @@ func NewVerifier(config VerifierConfig) (*Verifier, error) {
 }
 
 // Verify accepts the first valid signature without exposing which checks
-// failed. All signature comparisons use hmac.Equal.
+// failed. MAC equality uses hmac.Equal under local WEBHOOK-DEC-010 policy;
+// metadata/key lookup/candidate ordering do not have constant total runtime.
+// Input order selects the first valid key; invalid candidates do not poison
+// later candidates. Zero Message timestamp/nonce adopts the candidate values.
+// Verify performs no replay storage or observations and imposes no candidate
+// count/encoded-value bound; use the bounded HTTP parser for untrusted headers.
 func (v *Verifier) Verify(message Message, signatures []Signature) (Verification, error) {
 	now := v.clock().UTC()
 	for _, signature := range signatures {
@@ -463,6 +553,10 @@ func (v *Verifier) Verify(message Message, signatures []Signature) (Verification
 
 // VerifyAndRecord authenticates a message and then uses the replay store's
 // atomic check-and-record operation. It fails closed on every storage error.
+// With no store, eventID is ignored. Otherwise derive it from authenticated
+// components: the separate argument is not automatically covered by the MAC.
+// Recording occurs before business handling and is not rolled back on its failure.
+// Store expiry is sampled verification-clock time plus ReplayTTL, not signed time.
 func (v *Verifier) VerifyAndRecord(
 	ctx context.Context,
 	message Message,
@@ -517,6 +611,9 @@ func (v *Verifier) recordReplay(ctx context.Context, verification Verification, 
 	return nil
 }
 
+// Domain-separated length prefixes avoid delimiter collisions; key ID is
+// intentionally excluded so overlapping rotation signatures share one replay
+// identity (WEBHOOK-DEC-011, TestReplayIdentitySurvivesSecretRotation).
 func replayKey(namespace, eventID string) string {
 	digest := sha256.New()
 	for _, value := range []string{"go-webhook-replay-v1", namespace, eventID} {

@@ -155,6 +155,8 @@ func replayFixture(t *testing.T, now time.Time, store ReplayStore) (*Verifier, [
 	return verifier, signatures, message
 }
 
+// memoryReplayStore models atomic absence under one lock, not expiry or durable
+// transaction handling. Fixture TTL is recorded but never automatically expires.
 type memoryReplayStore struct {
 	mu   sync.Mutex
 	seen map[string]time.Time

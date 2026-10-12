@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+// BenchmarkSignerSign excludes construction and signs a 4 KiB body plus metadata
+// with one key; default random nonce generation stays in measured SHA256/512 calls.
 func BenchmarkSignerSign(b *testing.B) {
 	now := time.Unix(1_700_000_000, 0)
 	message := Message{
@@ -33,6 +35,8 @@ func BenchmarkSignerSign(b *testing.B) {
 	}
 }
 
+// BenchmarkVerifierVerify excludes signing/configuration and verifies one valid
+// SHA256 candidate over a 4 KiB body without replay storage or HTTP decoding.
 func BenchmarkVerifierVerify(b *testing.B) {
 	now := time.Unix(1_700_000_000, 0)
 	message := Message{Timestamp: now, Method: "POST", Path: "/hooks", Host: "example.com", Body: make([]byte, 4096)}

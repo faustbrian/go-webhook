@@ -74,7 +74,8 @@
     {
       "id": "WEBHOOK-DEC-012",
       "digests": [
-        "aa3beea1fd172bfa11c16f930f5e32cfde07fd0e4e920d3cd4c5e6f5b7d1af4f"
+        "aa3beea1fd172bfa11c16f930f5e32cfde07fd0e4e920d3cd4c5e6f5b7d1af4f",
+        "2cb58d83a45610b0e78c2948157c18ed5529f5e17e42bee4ab90e3e01c10b985"
       ]
     },
     {
@@ -98,7 +99,8 @@
     {
       "id": "WEBHOOK-DEC-016",
       "digests": [
-        "634c71628df1d835acbd35b7259cbf49f441166494ac2449730f2c35d5c80b42"
+        "634c71628df1d835acbd35b7259cbf49f441166494ac2449730f2c35d5c80b42",
+        "f69a06741e0ff932f572ab8b5e0652e92d232f8608924c21152dc64fc58474f5"
       ]
     },
     {

@@ -33,22 +33,35 @@ const maxFixedSignedHeaderBytes = 256
 // HeaderLimits bounds parsing before any base64 decoding or allocation based
 // on decoded values.
 type HeaderLimits struct {
+	// MaxSignatures must be positive and caps separate signature field values.
 	MaxSignatures int
-	MaxBytes      int
+	// MaxBytes must be positive and caps summed signature value bytes, not the whole HTTP request.
+	MaxBytes int
 }
 
-// EventIDExtractor extracts a replay identifier after authentication.
+// EventIDExtractor extracts a replay identifier after authentication. It is
+// borrowed and may run concurrently; return promptly without mutating request
+// or body. Derive identity from covered data or explicitly validate its binding:
+// an arbitrary HTTP header is not signed merely because extraction runs later.
+// Extractor errors map to ErrMissingEventID; panics are not contained.
 type EventIDExtractor func(request *http.Request, body []byte) (string, error)
 
 // RequestOptions controls bounded HTTP signing and verification.
 type RequestOptions struct {
+	// MaxBodyBytes must be positive and below MaxInt64 to reserve a sentinel byte.
 	MaxBodyBytes int64
+	// HeaderLimits bounds the complete signature set; both fields must be positive.
 	HeaderLimits HeaderLimits
-	Metadata     map[string]string
-	EventID      EventIDExtractor
+	// Metadata is borrowed signed data; signer/verifier must agree and callers must bound it.
+	Metadata map[string]string
+	// EventID runs only after authentication when replay is configured; derive from covered data.
+	EventID EventIDExtractor
 }
 
-// SetSignatureHeaders replaces all signature headers with strict v1 values.
+// SetSignatureHeaders formats every signature before replacing signature fields,
+// leaving header unchanged on format failure. header must be non-nil and not
+// concurrently mutated. Formatting has no aggregate count/byte cap; callers must
+// choose limits and then use ParseSignatureHeaders to admit the generated set.
 func SetSignatureHeaders(header http.Header, signatures []Signature) error {
 	if header == nil {
 		return fmt.Errorf("%w: header is required", ErrInvalidConfiguration)
@@ -75,6 +88,10 @@ func SetSignatureHeaders(header http.Header, signatures []Signature) error {
 
 // ParseSignatureHeaders parses all values strictly. Comma-combined values,
 // duplicate key IDs, noncanonical timestamps, and unknown fields are rejected.
+// Both limits must be positive; nil/absent headers are malformed. Returned values
+// are owned in input order, and one malformed sibling discards the complete set.
+// This local grammar is WEBHOOK-DEC-008, not RFC 8941 Structured Fields; base64
+// decoding follows Go RawURLEncoding behavior, not a separate canonical re-encode.
 func ParseSignatureHeaders(header http.Header, limits HeaderLimits) ([]Signature, error) {
 	if limits.MaxSignatures <= 0 {
 		return nil, fmt.Errorf("%w: positive signature count limit is required", ErrInvalidConfiguration)
@@ -251,7 +268,11 @@ func signatureBytes(algorithm Algorithm) int {
 }
 
 // SignRequest captures and restores the exact body, signs the effective
-// request target, and replaces any preexisting signature headers.
+// request target, and replaces any preexisting signature headers. It mutates the
+// exclusive request body/header; metadata stays borrowed. After capture, signing
+// failure can return body bytes with err. Generated signature-limit refusal
+// deletes signature fields rather than restoring earlier headers. Other headers
+// beyond Content-Type/Idempotency-Key are not implicitly authenticated.
 func (s *Signer) SignRequest(request *http.Request, options RequestOptions) ([]Signature, []byte, error) {
 	if request == nil {
 		return nil, nil, fmt.Errorf("%w: request is required", ErrInvalidConfiguration)
@@ -287,7 +308,11 @@ func (s *Signer) SignRequest(request *http.Request, options RequestOptions) ([]S
 }
 
 // VerifyRequest bounds and parses headers before capturing the exact body. It
-// authenticates before invoking the event-ID extractor or replay store.
+// authenticates before invoking the event-ID extractor or replay store. Returned
+// captured bytes on authentication/replay failure are not a success signal; only
+// nil err authorizes use of Verification. It mutates/restores exclusive request
+// body state, retains no copy of Metadata, and adds no timeout for body/clock/
+// extractor/store callbacks. Core observer panics alone are contained.
 func (v *Verifier) VerifyRequest(
 	ctx context.Context,
 	request *http.Request,
@@ -398,7 +423,11 @@ func fixedSignedHeader(header http.Header, name string) (string, error) {
 	return values[0], nil
 }
 
-// HeaderEventID returns a strict single-header extractor with a byte limit.
+// HeaderEventID returns a single-header cardinality/nonempty/byte-limit extractor.
+// Empty name, nonpositive limit or nil request is refused on invocation, not
+// construction. It neither validates UTF-8 nor cryptographically binds that
+// field. Select covered data or validate its binding in the application before
+// relying on the result for replay identity (WEBHOOK-DEC-012).
 func HeaderEventID(name string, maxBytes int) EventIDExtractor {
 	return func(request *http.Request, _ []byte) (string, error) {
 		if request == nil {

@@ -18,7 +18,12 @@ var (
 
 // CaptureBody reads at most maxBytes+1 bytes, closes the original body, and
 // restores an independent reader only after a complete successful capture.
-// A declared oversized body is rejected before the first read.
+// A declared oversized body is rejected before the first read. Authenticate
+// before any other consumer: prior bytes cannot be reconstructed. maxBytes must
+// be positive below MaxInt64. Successful bytes are caller-owned and independent
+// of restored request.Body; on capture failure no reader is restored. Invalid
+// arguments do not close a body. Reads/Close follow underlying blocking/panic
+// behavior; ErrBodyRead diagnostics can contain raw underlying error text.
 func CaptureBody(request *http.Request, maxBytes int64) ([]byte, error) {
 	if request == nil || request.Body == nil || maxBytes <= 0 || maxBytes == math.MaxInt64 {
 		return nil, fmt.Errorf("%w: request, body, and a positive limit are required", ErrInvalidConfiguration)

@@ -10,6 +10,7 @@ import (
 	"net/url"
 )
 
+// ErrDeliveryEncoding identifies invalid bounded local delivery wire data.
 var ErrDeliveryEncoding = errors.New("invalid webhook delivery encoding")
 
 type deliveryWire struct {
@@ -23,7 +24,10 @@ type deliveryWire struct {
 }
 
 // MarshalDeliveryRequest emits deterministic v1 bytes for queue and outbox
-// adapters and rejects output beyond maxBytes.
+// adapters and rejects output beyond maxBytes after JSON allocation. Bound
+// input beforehand: this is an encoded-size check, not a preallocation quota.
+// The wire contains unredacted endpoint/body/IDs/headers/metadata; durable owners
+// must protect it. Shape admission does not enforce DNS/SSRF egress policy.
 func MarshalDeliveryRequest(delivery DeliveryRequest, maxBytes int) ([]byte, error) {
 	if maxBytes <= 0 {
 		return nil, fmt.Errorf("%w: positive output limit is required", ErrDeliveryEncoding)
@@ -60,7 +64,10 @@ func MarshalDeliveryRequest(delivery DeliveryRequest, maxBytes int) ([]byte, err
 }
 
 // UnmarshalDeliveryRequest bounds input before strict decoding and rejects
-// unknown fields, trailing data, unsafe URLs, and incomplete identities.
+// unknown fields, trailing data, URL userinfo/fragments/nonabsolute targets and
+// incomplete identities. Returned body/header/map storage is independently owned.
+// Go JSON semantics apply to duplicate fields; this is not duplicate-key
+// rejection or authorization. Deliverer must still apply endpoint policy.
 func UnmarshalDeliveryRequest(encoded []byte, maxBytes int) (DeliveryRequest, error) {
 	if maxBytes <= 0 {
 		return DeliveryRequest{}, fmt.Errorf("%w: positive input limit is required", ErrDeliveryEncoding)

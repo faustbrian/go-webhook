@@ -1,5 +1,7 @@
 // Package webhooktest provides deterministic clocks, nonces, identifiers,
-// signers, and verifiers for consumer tests.
+// signers, and verifiers for consumer tests. Start with NewFixture; predictable
+// nonces/IDs are not production randomness or replay protection. No network,
+// background worker or process-global clock is owned.
 package webhooktest
 
 import (
@@ -11,9 +13,12 @@ import (
 	webhook "github.com/faustbrian/go-webhook/v3"
 )
 
+// ErrInvalidConfig identifies invalid deterministic fixture configuration.
 var ErrInvalidConfig = errors.New("webhooktest: invalid fixture configuration")
 
-// Clock is a concurrency-safe manually controlled clock.
+// Clock is a concurrency-safe manually controlled clock. The zero value returns
+// zero time; Set/Advance/Now coordinate one lock and may run concurrently. No
+// monotonic clock guarantee, timer or automatic time advancement is provided.
 type Clock struct {
 	mu  sync.RWMutex
 	now time.Time
@@ -47,19 +52,31 @@ func (c *Clock) Advance(duration time.Duration) {
 
 // FixtureConfig defines one deterministic signing and verification pair.
 type FixtureConfig struct {
-	Algorithm   webhook.Algorithm
-	KeyID       string
-	Secret      []byte
-	Time        time.Time
-	Tolerance   time.Duration
+	// Algorithm must be a core supported HMAC algorithm.
+	Algorithm webhook.Algorithm
+	// KeyID must be nonempty for the constructed core pair.
+	KeyID string
+	// Secret must be nonempty; each core constructor copies it. Never use live credentials in fixtures.
+	Secret []byte
+	// Time must be nonzero and initializes the shared UTC clock.
+	Time time.Time
+	// Tolerance must be nonnegative core verifier skew.
+	Tolerance time.Duration
+	// NoncePrefix must be nonempty; generated values are validated only when signing.
 	NoncePrefix string
-	IDPrefix    string
+	// IDPrefix must be nonempty; it prefixes a separate deterministic uint64 sequence.
+	IDPrefix string
 }
 
 // Fixture owns a shared clock, signer, verifier, and deterministic ID source.
+// Construct with NewFixture; zero is unusable. Sequence order follows lock
+// acquisition rather than goroutine launch, and uint64 counters eventually wrap.
 type Fixture struct {
-	Clock    *Clock
-	Signer   *webhook.Signer
+	// Clock is the shared concurrency-safe manually controlled clock.
+	Clock *Clock
+	// Signer is the constructed signer using predictable fixture nonces, not production entropy.
+	Signer *webhook.Signer
+	// Verifier is the constructed verifier with replay protection disabled.
 	Verifier *webhook.Verifier
 	ids      *sequence
 }

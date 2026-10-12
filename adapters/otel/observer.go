@@ -1,5 +1,7 @@
 // Package webhookotel adapts secret-safe webhook observations to the
-// telemetry runtime.
+// telemetry runtime. New borrows initialized instruments; caller owns runtime
+// flush/export/shutdown. No provider/global/worker lifecycle is started here.
+// Direct event enums/values remain caller-controlled, not normalized or redacted.
 package webhookotel
 
 import (
@@ -16,11 +18,14 @@ import (
 
 const scopeName = "github.com/faustbrian/go-webhook/v3/adapters/otel"
 
+// ErrInvalidConfig means no telemetry runtime was supplied.
 var ErrInvalidConfig = errors.New("webhook/otel: telemetry runtime is required")
 
 // Observer records one bounded counter and duration measurement per webhook
 // observation and adds an event to an already-active span. It never creates
 // attributes from payloads, URLs, headers, IDs, keys, signatures, or errors.
+// That guarantee applies to core-populated events, not arbitrary strings supplied
+// directly. Construct with New; concurrent use relies on OTel instrument contracts.
 type Observer struct {
 	events   metric.Int64Counter
 	duration metric.Float64Histogram

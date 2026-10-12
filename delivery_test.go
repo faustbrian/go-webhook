@@ -373,6 +373,8 @@ type sequencePolicy struct {
 	calls int
 }
 
+// blockingDoer holds accepted work for the fan-out concurrency oracle. The test
+// owns release closure; it deliberately ignores cancellation to expose joining.
 type blockingDoer struct {
 	active  atomic.Int32
 	maximum atomic.Int32

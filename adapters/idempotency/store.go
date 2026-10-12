@@ -1,4 +1,7 @@
 // Package webhookidempotency adapts idempotency leases to webhook replay checks.
+// New borrows a service and explicit full scope; CheckAndRecord uses fail-closed
+// Begin. Backend atomicity/lease expiry/availability remain with idempotency.
+// No backend, background worker, completion transaction or close is owned.
 package webhookidempotency
 
 import (
@@ -12,21 +15,32 @@ import (
 )
 
 var (
+	// ErrInvalidConfig identifies an absent service or invalid collision scope.
 	ErrInvalidConfig = errors.New("webhook/idempotency: invalid configuration")
+	// ErrInvalidExpiry means sampled expiry has no positive lease duration.
 	ErrInvalidExpiry = errors.New("webhook/idempotency: expiry must be in the future")
 )
 
 // Config supplies the durable service and full collision scope.
 type Config struct {
-	Service   *idempotency.Service
+	// Service is a mandatory borrowed idempotency service; caller owns backend/lifetime.
+	Service *idempotency.Service
+	// Namespace is a required validated idempotency scope component.
 	Namespace string
-	Tenant    string
+	// Tenant is a required validated tenant scope, not inferred from a request.
+	Tenant string
+	// Operation is a required validated operation scope.
 	Operation string
-	Caller    string
-	Clock     func() time.Time
+	// Caller is a required validated sender/application scope.
+	Caller string
+	// Clock is borrowed; nil uses time.Now and expiry is converted to a relative lease.
+	Clock func() time.Time
 }
 
-// Store implements webhook.ReplayStore with fail-closed durable leases.
+// Store implements webhook.ReplayStore through fail-closed leases. New is
+// required; zero Store is unusable. Service/clock must support concurrent calls
+// and bounded work. No Complete/Release is called; expiry permits later takeover,
+// and lease admission does not promise exactly-once business effects.
 type Store struct {
 	service   *idempotency.Service
 	namespace string

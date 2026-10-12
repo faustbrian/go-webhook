@@ -2,9 +2,12 @@
 
 Authentication proves message integrity; replay protection proves an event ID
 has not already been accepted inside a configured namespace and TTL. They are
-separate guarantees. Event IDs are extracted only after authentication and
-are hashed with a protocol domain and tenant namespace before storage. Key ID
-is deliberately excluded so rotation cannot accept the same event once per
+separate guarantees. The application must derive the ID from MAC-covered data
+or explicitly verify its binding; choosing an arbitrary header does not sign it.
+Header extraction checks cardinality/nonempty/byte count, not UTF-8. Admission
+is not rolled back if later business handling fails. IDs are extracted only
+after authentication and hashed with a protocol domain and tenant namespace
+before storage. Key ID is deliberately excluded so rotation cannot accept the same event once per
 overlapping secret.
 
 `ReplayStore.CheckAndRecord` must atomically return `true` only when it both

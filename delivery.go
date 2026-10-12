@@ -14,22 +14,33 @@ import (
 	"time"
 )
 
+// IdempotencyHeader is the local signed application idempotency field, not a receiver guarantee.
 const IdempotencyHeader = "Idempotency-Key"
 
 var (
-	ErrDeliveryFailed   = errors.New("webhook delivery failed")
+	// ErrDeliveryFailed categorizes delivery construction/transport/status failures.
+	ErrDeliveryFailed = errors.New("webhook delivery failed")
+	// ErrEndpointRejected categorizes endpoint admission refusal.
 	ErrEndpointRejected = errors.New("webhook endpoint rejected")
+	// ErrResponseTooLarge means the response sentinel read exceeded its byte bound.
 	ErrResponseTooLarge = errors.New("webhook response too large")
-	ErrFanOutLimit      = errors.New("webhook fan-out limit exceeded")
+	// ErrFanOutLimit means input delivery count exceeded MaxFanOut.
+	ErrFanOutLimit = errors.New("webhook fan-out limit exceeded")
 )
 
 // HTTPDoer is implemented by http.Client and compatible client wrappers.
 type HTTPDoer interface {
+	// Do must honor request context and return a non-nil Response when err is nil.
+	// The Deliverer closes response bodies, including response-plus-error cases.
+	// Caller configuration must enforce redirects/proxy/egress and bounded I/O.
 	Do(request *http.Request) (*http.Response, error)
 }
 
 // EndpointPolicy validates an endpoint immediately before every attempt.
 type EndpointPolicy interface {
+	// Validate admits or rejects a shallow per-attempt URL copy; implementations
+	// must be concurrency-safe, honor ctx and return promptly. Validation alone
+	// cannot prevent a different address being selected by an unsafe HTTP client.
 	Validate(ctx context.Context, endpoint *url.URL) error
 }
 
@@ -41,24 +52,33 @@ func (f EndpointPolicyFunc) Validate(ctx context.Context, endpoint *url.URL) err
 	return f(ctx, endpoint)
 }
 
-// SleepFunc provides cancellable, injectable delivery backoff.
+// SleepFunc provides injectable delivery backoff. Implementations must honor
+// ctx, be safe for concurrent calls and bound their work. Their errors return
+// directly; callbacks are not forcibly canceled or panic-contained.
 type SleepFunc func(ctx context.Context, duration time.Duration) error
 
 // FailureClassification is a stable delivery outcome category.
 type FailureClassification string
 
 const (
-	FailureNone      FailureClassification = "none"
+	// FailureNone marks a locally successful attempt.
+	FailureNone FailureClassification = "none"
+	// FailureRetryable marks a failure scheduled for another attempt.
 	FailureRetryable FailureClassification = "retryable"
-	FailureTerminal  FailureClassification = "terminal"
+	// FailureTerminal marks a nonretryable/construction/body/canceled failure.
+	FailureTerminal FailureClassification = "terminal"
+	// FailureExhausted marks a retryable failure with no attempt allowance remaining.
 	FailureExhausted FailureClassification = "exhausted"
 )
 
 // RetryPolicy bounds attempts and exponential backoff.
 type RetryPolicy struct {
+	// MaxAttempts must be positive at construction and includes the first try; no key forces one.
 	MaxAttempts int
-	BaseDelay   time.Duration
-	MaxDelay    time.Duration
+	// BaseDelay is nonnegative initial fallback delay, zero allowed.
+	BaseDelay time.Duration
+	// MaxDelay caps both Retry-After and exponential delay and must be at least BaseDelay.
+	MaxDelay time.Duration
 }
 
 // Delay returns a Retry-After delay when valid, otherwise exponential backoff.
@@ -95,63 +115,106 @@ func (p RetryPolicy) Delay(attempt int, now time.Time, retryAfter string) time.D
 	return min(delay, p.MaxDelay)
 }
 
-// DeliveryAttempt records one actual HTTP attempt without payloads, secrets,
+// DeliveryAttempt records one admitted attempt, including request-construction
+// failure before HTTP dispatch. Core diagnostics exclude payloads, secrets,
 // signatures, endpoint query strings, or sensitive response headers.
 type DeliveryAttempt struct {
-	ID             string
-	Number         int
-	StartedAt      time.Time
-	CompletedAt    time.Time
-	StatusCode     int
+	// ID is a caller-generated nonempty attempt ID; no length or privacy validation is added.
+	ID string
+	// Number is one-based within this delivery.
+	Number int
+	// StartedAt is sampled before request construction.
+	StartedAt time.Time
+	// CompletedAt is sampled after Do or construction failure, before response body read.
+	CompletedAt time.Time
+	// StatusCode is returned HTTP status, zero on construction/transport failure.
+	StatusCode int
+	// Classification records local retry policy, not receiver-side effect certainty.
 	Classification FailureClassification
-	RetryAfter     time.Duration
-	Diagnostic     string
+	// RetryAfter is planned bounded backoff; it does not prove sleep completed.
+	RetryAfter time.Duration
+	// Diagnostic is a fixed core diagnostic; caller-constructed values are not sanitized.
+	Diagnostic string
 }
 
-// DeliveryResult contains bounded delivery evidence.
+// DeliveryResult contains per-call evidence. Attempts/response bytes are owned
+// slices but may also be shared with DeadLetter callbacks. IDs and response data
+// are application/endpoint-controlled and not sanitized; do not log blindly.
 type DeliveryResult struct {
-	ID           string
-	EventID      string
-	Attempts     []DeliveryAttempt
+	// ID is a caller-generated delivery identity, possibly empty on pre-admission failure.
+	ID string
+	// EventID is copied caller attribution, not independently authenticated by outbound delivery.
+	EventID string
+	// Attempts is per-call evidence in attempt order, including request-construction failures.
+	Attempts []DeliveryAttempt
+	// ResponseBody is owned bounded bytes from the last successfully read response; it may be sensitive.
 	ResponseBody []byte
 }
 
 // DeliveryRequest describes one endpoint delivery.
 type DeliveryRequest struct {
-	Endpoint       *url.URL
-	Body           []byte
-	EventID        string
+	// Endpoint is borrowed and shallow-copied per attempt before EndpointPolicy.
+	Endpoint *url.URL
+	// Body is borrowed across attempts; do not mutate it during delivery or serialization.
+	Body []byte
+	// EventID must be nonempty attribution; no automatic event-ID HTTP header is emitted.
+	EventID string
+	// IdempotencyKey enables core retries when nonempty; receiver semantics remain application-owned.
 	IdempotencyKey string
-	Headers        http.Header
-	Metadata       map[string]string
+	// Headers is cloned per attempt; JSON Content-Type and explicit idempotency override matching values.
+	Headers http.Header
+	// Metadata is borrowed canonical signed data; bound size and avoid concurrent mutation.
+	Metadata map[string]string
 }
 
 // DeadLetterFunc receives a terminal bounded result for durable handling by
-// the application. The core does not implement storage or a queue.
+// the application. The core does not implement storage or a queue. It runs
+// synchronously on selected terminal paths, not all early/canceled failures.
+// Result slices may alias returned evidence: do not mutate them. Hook errors
+// join the primary error and may expose caller text; panics are not contained.
 type DeadLetterFunc func(ctx context.Context, result DeliveryResult) error
 
-// ReplayHook records an operator-requested replay before a new delivery starts.
+// ReplayHook records an operator-requested replay before new delivery validation.
+// It is optional, borrowed and synchronous; errors prevent delivery, panics
+// propagate, and the application owns authorization and durable audit semantics.
 type ReplayHook func(ctx context.Context, originalDeliveryID, eventID string) error
 
 // DeliveryConfig configures a bounded deliverer.
 type DeliveryConfig struct {
-	Client           HTTPDoer
-	Signer           *Signer
-	EndpointPolicy   EndpointPolicy
-	Retry            RetryPolicy
-	Clock            func() time.Time
-	Sleep            SleepFunc
-	IDGenerator      func() (string, error)
-	MaxRequestBytes  int64
+	// Client is a mandatory borrowed HTTPDoer; redirects/proxy/timeout policy is caller-owned.
+	Client HTTPDoer
+	// Signer is a mandatory constructed signer retained across calls.
+	Signer *Signer
+	// EndpointPolicy is mandatory and invoked before each try; use a validated transport for dial-time safety.
+	EndpointPolicy EndpointPolicy
+	// Retry must have positive attempts and nonnegative ordered delay bounds.
+	Retry RetryPolicy
+	// Clock is borrowed; nil uses time.Now. It must be concurrency-safe and return promptly.
+	Clock func() time.Time
+	// Sleep is borrowed; nil uses a context-aware timer. Honor context and bound callback work.
+	Sleep SleepFunc
+	// IDGenerator is mandatory, borrowed and must provide fresh nonempty IDs concurrently.
+	IDGenerator func() (string, error)
+	// MaxRequestBytes must be positive below MaxInt64; caps request body bytes, not metadata/headers.
+	MaxRequestBytes int64
+	// MaxResponseBytes must be positive below MaxInt64; caps retained response bytes plus one sentinel read.
 	MaxResponseBytes int64
-	MaxFanOut        int
-	HeaderLimits     HeaderLimits
-	DeadLetter       DeadLetterFunc
-	ReplayHook       ReplayHook
-	Observer         Observer
+	// MaxFanOut must be positive and caps delivery count, not all concurrent calls or total memory.
+	MaxFanOut int
+	// HeaderLimits bounds generated signature fields and must have positive members.
+	HeaderLimits HeaderLimits
+	// DeadLetter is optional synchronous terminal-result handling, not durable storage itself.
+	DeadLetter DeadLetterFunc
+	// ReplayHook is optional synchronous operator replay audit, invoked before new delivery validation.
+	ReplayHook ReplayHook
+	// Observer is optional synchronous observation; core contains its panics, not its blocking.
+	Observer Observer
 }
 
-// Deliverer signs and sends bounded webhook attempts.
+// Deliverer signs and sends bounded webhook attempts. Use NewDeliverer; zero
+// is unusable. Concurrent calls/FanOut require safe client/signer/policy/clock/
+// ID/sleep/hooks. It owns no persistent worker, queue or client close lifecycle.
+// Bounds are per call, not global throughput or total process memory guarantees.
 type Deliverer struct {
 	client           HTTPDoer
 	signer           *Signer
@@ -169,7 +232,10 @@ type Deliverer struct {
 	observer         Observer
 }
 
-// NewDeliverer validates every mandatory safety bound and injectable.
+// NewDeliverer validates positive bounds, collaborators and retry delays before
+// returning an immutable configuration owner. Nil interfaces are refused but
+// typed nil is not detected. Collaborators are borrowed and not invoked; no
+// timeout, redirect or proxy policy is installed on a supplied Client.
 func NewDeliverer(config DeliveryConfig) (*Deliverer, error) {
 	if err := validateDeliveryConfig(config); err != nil {
 		return nil, err
@@ -233,7 +299,11 @@ func validateDeliveryConfig(config DeliveryConfig) error {
 }
 
 // Deliver performs bounded attempts. Retries are disabled for requests that
-// do not carry an explicit idempotency key.
+// do not carry an explicit idempotency key. It uses POST/JSON, re-signs each try
+// and admits policy before construction. 2xx succeeds; transport errors and
+// 408/425/429/500/502/503/504 can retry. Returned result may contain partial
+// evidence/last response on error; caller context and cooperative collaborators
+// bound blocking. Observer panics are contained, lifecycle/client panics are not.
 func (d *Deliverer) Deliver(ctx context.Context, delivery DeliveryRequest) (DeliveryResult, error) {
 	result := DeliveryResult{EventID: delivery.EventID}
 	if delivery.Endpoint == nil {
@@ -352,7 +422,7 @@ func (d *Deliverer) Deliver(ctx context.Context, delivery DeliveryRequest) (Deli
 	return result, fmt.Errorf("%w: attempt limit exhausted without a result", ErrDeliveryFailed)
 }
 
-// DeliverOnce performs exactly one HTTP attempt even when the Deliverer retry
+// DeliverOnce performs at most one HTTP attempt even when the Deliverer retry
 // policy allows more. Queue and outbox consumers use this to avoid nested
 // retry multiplication.
 func (d *Deliverer) DeliverOnce(ctx context.Context, delivery DeliveryRequest) (DeliveryResult, error) {
@@ -459,11 +529,18 @@ func (d *Deliverer) terminalError(ctx context.Context, result DeliveryResult, pr
 
 // FanOutResult preserves the input order of a bounded fan-out operation.
 type FanOutResult struct {
+	// Result is delivery evidence at the matching input index, even on per-delivery failure.
 	Result DeliveryResult
-	Err    error
+	// Err is the matching delivery error; FanOut returns it here, not as aggregate error.
+	Err error
 }
 
-// FanOut runs deliveries with a bounded worker pool and no durable queue.
+// FanOut runs deliveries with min(workers, input count) joined workers and no
+// durable queue. workers must be positive and count <= MaxFanOut. It preserves
+// input order, not dispatch/completion order; delivery errors live in each result.
+// It waits for all workers, including canceled calls. A collaborator ignoring
+// context can delay return; no worker is detached to satisfy a timeout. Inputs
+// stay borrowed for the entire call and must not be concurrently mutated.
 func (d *Deliverer) FanOut(ctx context.Context, deliveries []DeliveryRequest, workers int) ([]FanOutResult, error) {
 	if workers < 1 {
 		return nil, fmt.Errorf("%w: positive fan-out workers required", ErrInvalidConfiguration)
@@ -497,7 +574,9 @@ func (d *Deliverer) FanOut(ctx context.Context, deliveries []DeliveryRequest, wo
 }
 
 // Replay audits operator intent before starting a new independently identified
-// delivery. It does not mutate or reuse the original attempt record.
+// delivery. It does not mutate or reuse the original attempt record. Hook nil
+// permits replay without audit; the core does not look up original state or
+// prove operator permission. Fresh identity depends on caller IDGenerator.
 func (d *Deliverer) Replay(
 	ctx context.Context,
 	originalDeliveryID string,

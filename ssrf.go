@@ -15,20 +15,30 @@ import (
 
 // NetIPResolver is implemented by net.Resolver and controlled test resolvers.
 type NetIPResolver interface {
+	// LookupNetIP returns a stable answer slice for immediate admission. Honor
+	// ctx, support concurrent calls and bound resolution/answer allocation.
 	LookupNetIP(ctx context.Context, network, host string) ([]netip.Addr, error)
 }
 
 // SSRFPolicyConfig configures default-deny endpoint validation. AllowedPrefixes
 // are explicit exceptions for private test or trusted network endpoints.
 type SSRFPolicyConfig struct {
-	Resolver        NetIPResolver
-	AllowHTTP       bool
+	// Resolver is mandatory and borrowed; honor context and bound DNS work before returning.
+	Resolver NetIPResolver
+	// AllowHTTP permits plaintext http; false requires exact lowercase https.
+	AllowHTTP bool
+	// AllowedPrefixes is copied/masked explicit address exceptions; deny prefixes still win.
 	AllowedPrefixes []netip.Prefix
-	DeniedPrefixes  []netip.Prefix
-	MaxAddresses    int
+	// DeniedPrefixes is copied/masked and takes precedence over all allowances.
+	DeniedPrefixes []netip.Prefix
+	// MaxAddresses must be positive and caps returned DNS answer count, not resolver allocations.
+	MaxAddresses int
 }
 
-// SSRFPolicy validates URL syntax and every resolved address.
+// SSRFPolicy validates URL syntax and every resolved address. Use NewSSRFPolicy;
+// zero is not configured for safe hostname resolution. Prefixes are immutable
+// copies, resolver is borrowed; concurrent use depends on it. Validate is not
+// a dial lock: use NewSecureHTTPClient to enforce address policy at connection time.
 type SSRFPolicy struct {
 	resolver     NetIPResolver
 	allowHTTP    bool
@@ -51,7 +61,9 @@ var reservedPrefixes = []netip.Prefix{
 
 const secureDialerKeepAlive = 30 * time.Second
 
-// NewSSRFPolicy constructs a policy with explicit resolver and DNS bounds.
+// NewSSRFPolicy copies/masks valid prefixes and requires a resolver plus positive
+// answer limit. A nil resolver returns an error; typed-nil resolvers are not detected.
+// Caller bounds prefix count and resolver work; no network work runs here.
 func NewSSRFPolicy(config SSRFPolicyConfig) (*SSRFPolicy, error) {
 	if config.Resolver == nil {
 		return nil, fmt.Errorf("%w: resolver is required", ErrInvalidConfiguration)
@@ -89,7 +101,11 @@ func copyPrefixes(prefixes []netip.Prefix) ([]netip.Prefix, error) {
 	return result, nil
 }
 
-// Validate implements EndpointPolicy and resolves hostnames immediately.
+// Validate implements EndpointPolicy and resolves hostnames immediately. Literal
+// addresses bypass DNS; all answers must pass or the entire endpoint is denied.
+// Deny prefixes precede allow exceptions, then builtin non-public/reserved rules.
+// Local policy is WEBHOOK-DEC-019–021; inputs are pinned in specification/manifest.tsv.
+// This is not proof of current registry completeness or real egress.
 func (p *SSRFPolicy) Validate(ctx context.Context, endpoint *url.URL) error {
 	if endpoint == nil {
 		return fmt.Errorf("%w: URL is required", ErrEndpointRejected)
@@ -244,7 +260,12 @@ func (p *SSRFPolicy) validateAddress(address netip.Addr) error {
 
 // NewSecureHTTPClient creates a direct, no-proxy client whose transport
 // re-resolves and revalidates addresses at dial time. Redirects are returned to
-// the caller without being followed.
+// the caller without being followed. It returns a new owned client/transport
+// and keeps standard TLS certificate/hostname verification, while disabling
+// automatic HTTP/2 for this validated direct-dial path (WEBHOOK-DEC-021).
+// Callers own response closure, idle connections and client lifetime, and must
+// not replace policy fields/transports after publication. Cloning assumes the
+// process http.DefaultTransport is still a *http.Transport; otherwise it panics.
 func NewSecureHTTPClient(policy *SSRFPolicy, timeout time.Duration) (*http.Client, error) {
 	if policy == nil {
 		return nil, fmt.Errorf("%w: policy is required", ErrInvalidConfiguration)

@@ -23,6 +23,7 @@
 
 ## Reference and maintenance
 
+- [Source documentation audit](source-documentation.md)
 - [FAQ](faq.md)
 - [Migration](migration.md)
 - [Release process](release.md)

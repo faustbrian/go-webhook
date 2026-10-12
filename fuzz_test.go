@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// FuzzParseSignatureHeaders varies one untrusted field under a 4096-byte parsing cap and checks accepted formatting.
 func FuzzParseSignatureHeaders(f *testing.F) {
 	f.Add("v1;algorithm=sha256;keyid=a2V5;timestamp=1700000000;nonce=bm9uY2U;signature=ubEWwKQcbLvNqyq4NDMHO4k5KX8euM7Z9nnpaZC2mD8")
 	f.Add("")
@@ -26,6 +27,7 @@ func FuzzParseSignatureHeaders(f *testing.F) {
 	})
 }
 
+// FuzzCanonicalize varies arbitrary request/body bytes and checks deterministic canonical bytes/errors; inputs have no size cap here.
 func FuzzCanonicalize(f *testing.F) {
 	f.Add("POST", "/hooks", "a=1", "example.com", "application/json", "event-1", []byte("body"), "key", "nonce")
 	f.Add("\n", "%", "%", "", "\r\n", "\xff", []byte{0xff}, "", "")
@@ -43,6 +45,7 @@ func FuzzCanonicalize(f *testing.F) {
 	})
 }
 
+// FuzzTimestampVerification varies int64 seconds and checks robust refusal/processing, not MAC acceptance of the fixed invalid value.
 func FuzzTimestampVerification(f *testing.F) {
 	f.Add(int64(0))
 	f.Add(int64(1_700_000_000))
@@ -64,6 +67,7 @@ func FuzzTimestampVerification(f *testing.F) {
 	})
 }
 
+// FuzzDeliveryWire bounds untrusted JSON at 4096 bytes and checks accepted encode/decode round trips.
 func FuzzDeliveryWire(f *testing.F) {
 	f.Add([]byte(`{"version":"v1","endpoint":"https://example.com","body":"","event_id":"event"}`))
 	f.Add([]byte(`{`))
@@ -81,6 +85,7 @@ func FuzzDeliveryWire(f *testing.F) {
 	})
 }
 
+// FuzzEnvelope varies required strings/raw JSON and checks emitted JSON validity, not application schema or output limits.
 func FuzzEnvelope(f *testing.F) {
 	f.Add("id", "type", "source", []byte(`{"valid":true}`))
 	f.Add("", "", "", []byte(`{`))
@@ -93,6 +98,7 @@ func FuzzEnvelope(f *testing.F) {
 	})
 }
 
+// FuzzSSRFPolicy varies URL syntax with a controlled finite resolver; it does not test real DNS/egress.
 func FuzzSSRFPolicy(f *testing.F) {
 	f.Add("https://example.com/hook")
 	f.Add("http://127.0.0.1/")

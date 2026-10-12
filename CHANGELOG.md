@@ -5,6 +5,15 @@ and Semantic Versioning.
 
 ## [Unreleased]
 
+### Documentation
+
+- Clarify copied secrets versus borrowed inputs/callbacks, replay provenance,
+  partial delivery results, secure-client lifecycle and adapter retry ownership,
+  including zero-send admission failures under the one-attempt cap.
+- Correct [WEBHOOK-DEC-012](docs/specification-decisions.md#webhook-dec-012-event-id-extraction-occurs-after-authentication)
+  to describe existing byte/cardinality extraction and application-owned MAC
+  binding without promising UTF-8 validation or changing runtime behavior.
+
 ## [3.0.2] - 2026-10-10
 
 ### Security
