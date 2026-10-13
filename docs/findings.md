@@ -1,5 +1,7 @@
 # Hardening findings
 
+[Documentation index](README.md)
+
 | Severity | Exploitability | Finding | Evidence | Disposition |
 | --- | --- | --- | --- | --- |
 | Critical | Remote endpoint or DNS attacker could redirect delivery to internal services | URL-only policy permitted redirect or DNS-change bypass | controlled resolver and redirect tests | Resolved: redirects refused; every dial re-resolves and validates all addresses |
@@ -23,3 +25,5 @@
 
 No open critical, high, or medium finding remains. Provider support remains
 intentionally empty rather than making a claim without authoritative vectors.
+
+Continue with [API and compatibility](api.md).

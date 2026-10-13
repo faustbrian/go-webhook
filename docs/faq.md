@@ -1,5 +1,7 @@
 # FAQ
 
+[Documentation index](README.md)
+
 ## Does this provide exactly-once webhooks?
 
 No. It provides authenticated messages, atomic replay rejection, and
@@ -28,3 +30,5 @@ None by preset in v1. Only the documented generic scheme is claimed.
 
 Use `Observation` categories. Do not log raw headers, payloads, URLs, event
 IDs, keys, signatures, or detailed errors from untrusted input.
+
+Continue with [API and compatibility](api.md).

@@ -1,5 +1,7 @@
 # API and compatibility
 
+[Documentation index](README.md)
+
 The root package contains protocol primitives. `Signer` emits signatures for
 all active keys. `Verifier` authenticates a bounded timestamp and optionally
 records a replay key. `CaptureBody`, `SignRequest`, `VerifyRequest`, and

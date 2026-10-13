@@ -1,5 +1,7 @@
 # Delivery, retries, dead letters, and replay
 
+[Documentation index](README.md)
+
 `Deliverer` validates the endpoint before every attempt, generates stable
 delivery and attempt IDs, signs the exact body and request target, bounds the
 response, and records every completed attempt. Retryable transport failures
@@ -27,3 +29,5 @@ work; callers own shutdown deadlines and persistence.
 The executable `ExampleAdapter_Enqueue` demonstrates bounded queued delivery.
 HTTP client deadlines are transport failures; once the configured attempt
 bound is reached they are classified as exhausted and enter dead-letter flow.
+
+Continue with [API and compatibility](api.md).

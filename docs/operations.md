@@ -1,5 +1,7 @@
 # Operations and troubleshooting
 
+[Documentation index](README.md)
+
 Monitor counts and latency by fixed operation/outcome/reason. Alert on replay
 store failures, policy rejection changes, terminal delivery rates, exhausted
 retries, and sustained body/header limits. Never label metrics with tenant,
@@ -30,3 +32,5 @@ deliberate resource budget.
 Current residual risks: HMAC security depends on operator-generated secrets;
 durability depends on the supplied replay/queue/outbox stores; explicit SSRF
 allow prefixes weaken defaults.
+
+Continue with [API and compatibility](api.md).

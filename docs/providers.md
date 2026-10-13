@@ -1,5 +1,7 @@
 # Provider and interoperability matrix
 
+[Documentation index](README.md)
+
 | Scheme or provider | Status | Evidence |
 | --- | --- | --- |
 | Generic `v1` HMAC-SHA-256 | Supported | Go tests plus independent Python vectors |
@@ -14,3 +16,5 @@ Generic compatibility does not imply provider compatibility.
 Run `make interoperability`. The Python checker reconstructs canonical bytes
 without importing this Go module, verifies the expected canonical base64url,
 body digest, and signatures, and fails on drift.
+
+Continue with [API and compatibility](api.md).

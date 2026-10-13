@@ -1,5 +1,7 @@
 # Inbound verification and raw bodies
 
+[Documentation index](README.md)
+
 Verification must be the first component that consumes the request body.
 `CaptureBody` rejects invalid limits, rejects a known oversized
 `Content-Length` before reading, reads at most `limit+1`, closes the original,
@@ -25,3 +27,5 @@ Rotation uses overlapping validity windows. Emit with the new and old active
 keys, deploy recipient verification for both, then revoke the old key after
 the maximum delivery and replay window. Key IDs are public routing labels,
 not secrets.
+
+Continue with [API and compatibility](api.md).

@@ -1,5 +1,7 @@
 # Threat model and SSRF matrix
 
+[Documentation index](README.md)
+
 The attacker controls request bytes, signature headers, event IDs, endpoint
 URLs, DNS answers, responses, and timing. The operator controls trusted keys,
 clock, limits, replay store, and endpoint allow/deny policy.
@@ -27,3 +29,5 @@ Allowing HTTP or private prefixes is an operator exception intended for
 controlled networks and tests. TLS certificate and hostname verification stay
 owned by `net/http`. Application authorization and payload schema validation
 remain out of scope.
+
+Continue with [Operations and troubleshooting](operations.md).

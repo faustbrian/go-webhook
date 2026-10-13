@@ -1,5 +1,7 @@
 # Source documentation audit
 
+[Documentation index](README.md)
+
 ## Scope and contract inventory
 
 Baseline `172a21507211a53d5f775eca5fd471dfb824e1b6` contains 45 tracked Go

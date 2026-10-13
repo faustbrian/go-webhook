@@ -1,5 +1,7 @@
 # Migration and SemVer
 
+[Documentation index](README.md)
+
 <a id="version-3-module-migration-pending-publication"></a>
 
 ## Version 3 module migration

@@ -1,5 +1,7 @@
 # Release and verification record
 
+[Documentation index](README.md)
+
 ## Historical v1 publication
 
 `v1.0.0` was published on 2026-08-26. The published

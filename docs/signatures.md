@@ -1,5 +1,7 @@
 # Signature scheme v1
 
+[Documentation index](README.md)
+
 `v1` supports `sha256` and `sha512`. It signs a labeled, newline-delimited
 sequence of: version, algorithm, Unix timestamp seconds, nonce, key ID,
 exact case-sensitive method, escaped path, canonical query, lowercase host, fixed

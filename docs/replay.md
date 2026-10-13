@@ -1,5 +1,7 @@
 # Replay and idempotency
 
+[Documentation index](README.md)
+
 Authentication proves message integrity; replay protection proves an event ID
 has not already been accepted inside a configured namespace and TTL. They are
 separate guarantees. The application must derive the ID from MAC-covered data
@@ -20,3 +22,5 @@ namespaces. The contract deliberately does not promise exactly-once handling.
 caller, and the already-hashed replay value. A lease acquisition is new;
 retained, in-progress, replay, and conflict outcomes are replay rejection.
 Choose a TTL covering clock tolerance plus the provider's maximum retry age.
+
+Continue with [API and compatibility](api.md).

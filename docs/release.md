@@ -1,5 +1,7 @@
 # Release process
 
+[Documentation index](README.md)
+
 Releases start from a clean tree and the exact commit that will be tagged.
 The changelog must describe every user-visible behavior and compatibility
 decision.

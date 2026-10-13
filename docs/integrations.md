@@ -1,5 +1,7 @@
 # Integrations and observability
 
+[Documentation index](README.md)
+
 ## HTTP clients
 
 `Deliverer` accepts any `HTTPDoer`. The released

@@ -1,5 +1,7 @@
 # Audit matrices
 
+[Documentation index](README.md)
+
 ## Signature and interoperability
 
 | Scheme | Canonical inputs | Rotation | Independent evidence | Negative evidence |
