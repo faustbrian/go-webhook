@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	github.com/faustbrian/go-idempotency v1.2.0
-	github.com/faustbrian/go-log/v2 v2.0.0
+	github.com/faustbrian/go-log/v2 v2.0.2
 	github.com/faustbrian/go-queue v1.1.3
 	github.com/faustbrian/go-telemetry/v2 v2.0.0
 	github.com/faustbrian/go-transactional-outbox/v2 v2.0.0
