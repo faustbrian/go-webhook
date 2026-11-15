@@ -3,6 +3,20 @@
 All notable changes are documented here. This project follows Keep a Changelog
 and Semantic Versioning.
 
+## 3.0.4 - 2026-11-15
+
+### Security
+
+- Build with Go 1.27.4 to address GO-2026-6859 in `net/http`.
+  Consumers should use Go 1.27.4 or newer.
+
+### Documentation
+
+- Renew the specification authority review: RFC 9110 Errata IDs 9162 and
+  9164 were rejected, the IANA special-purpose registries changed markup only,
+  and the W3C Trace Context history lists no new publication. All are
+  behavior-neutral.
+
 ## 3.0.3 - 2026-10-22
 
 ### Changed
