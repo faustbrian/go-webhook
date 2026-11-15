@@ -95,3 +95,65 @@ sensitive data. The existing decision and conformance bindings remain selected.
 No claim is made about the exact markup difference because the former page
 body is not retained. Reconsider if the selected Level 1 authority changes or
 Level 2 adoption is proposed.
+
+## 2026-11-15: Authority freshness, RFC 9110 errata and registry markup
+
+All 31 monitored authorities were retrieved again. Twenty-five retain their
+exact reviewed digests. The six changed digests below are behavior-neutral.
+
+- **Authority:** `rfc9110-errata`
+- **URL:** https://errata.rfc-editor.org/search/?rfc_number=9110&presentation=records
+- **Previous SHA-256:**
+  `cec32fd170146656d933f627b512f2e027ae5c3592f5ec7760c3627493b30505`
+- **Reviewed SHA-256:**
+  `bdd312bd1c1dc5b04ac86286bf6f1eca35fb70371c3900d8638fe98ba16c963f`
+- **Retrieved and reviewed:** 2026-11-15
+- **Applicability:** `WEBHOOK-DEC-005`, `WEBHOOK-DEC-012`, and
+  `WEBHOOK-DEC-015` directly; `WEBHOOK-DEC-014` as outbound header
+  ownership context
+- **Disposition:** Behavior-neutral. Errata IDs 9162 and 9164 were both
+  Rejected on 2026-11-13. No erratum was added and no other erratum changed
+  status. The verification-based reconsideration triggers for both reports no
+  longer apply; the triggers for Webhook taking ownership of HTTP grammar or
+  combined-field serialization remain. The immutable RFC 9110 source is
+  unchanged.
+
+- **Authorities:** `iana-ipv4-source` and `iana-ipv4-updates`
+- **URL:** https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xml
+- **Previous SHA-256:**
+  `cf24e11f41b7d42c68debe2d18b97cac815084ec413ebb3b244f704028a16f20`
+- **Reviewed SHA-256:**
+  `37f334466c842387a8aee8d1ae7a6d5b2208ef27eb8964072538b73ee2f5b21d`
+- **Retrieved and reviewed:** 2026-11-15
+- **Applicability:** `WEBHOOK-DEC-020`
+- **Disposition:** Behavior-neutral; see the shared IPv4 and IPv6 disposition
+  below.
+
+- **Authorities:** `iana-ipv6-source` and `iana-ipv6-updates`
+- **URL:** https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xml
+- **Previous SHA-256:**
+  `c17f4380ba84fb2160dae82ebfd8bd155a5853cfab624ed3a9fd251638a8be02`
+- **Reviewed SHA-256:**
+  `660acf0201b462b8d820605ba1cb20c4ed216acd883ee4a55a17453d73d4c3aa`
+- **Retrieved and reviewed:** 2026-11-15
+- **Applicability:** `WEBHOOK-DEC-020`
+- **Disposition:** Behavior-neutral. Compared with archived copies of the
+  previously reviewed bytes, both registries change only markup: note bullets
+  use `*` instead of `o`, and section references moved into `xref`
+  attributes. The `specification/manifest.tsv` pins move to the same bytes.
+  No address block, flag, date or termination changed, and both
+  registries still report their earlier `updated` dates. The SSRF special-
+  purpose address decisions remain selected.
+
+- **Authority:** `trace-context-releases`
+- **URL:** https://www.w3.org/standards/history/trace-context/
+- **Previous SHA-256:**
+  `70e2dad402936139fafff07cc28c6739e3d3bb8be4ca0550107cf21216533832`
+- **Reviewed SHA-256:**
+  `c0af0b44f69e7898de91896433c1376f23d412eba6a05f297d9f29608253f367`
+- **Retrieved and reviewed:** 2026-11-15
+- **Applicability:** `WEBHOOK-DEC-023`
+- **Disposition:** Behavior-neutral. The page changed without adding a
+  publication: its history still lists the 2021-11-23 Recommendation as the
+  latest Level 1 publication. The exact difference is not claimed because the
+  former page body is not retained.
