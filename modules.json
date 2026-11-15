@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "repository": "github.com/faustbrian/go-webhook",
-  "go_version": "1.27.3",
+  "go_version": "1.27.4",
   "modules": [
     {
       "directory": ".",
@@ -101,7 +101,7 @@
       "family_label": "Protocols And Descriptions",
       "family_description": "Standards, envelopes, schemas, descriptions, signatures, and wire interoperability.",
       "family_order": 3,
-      "version": "3.0.3",
+      "version": "3.0.4",
       "tag_prefix": "v",
       "owned_dependencies": [
         "github.com/faustbrian/go-idempotency",
